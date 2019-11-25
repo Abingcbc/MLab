@@ -38,4 +38,8 @@ public class Model {
         node2.addPrev(this.getNodeByKey(from));
         linkList.add(new Link(node1,node2));
     }
+
+    public String getName() {
+        return name;
+    }
 }

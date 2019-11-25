@@ -5,6 +5,6 @@ import org.springframework.stereotype.Component;
 
 @Mapper
 @Component
-public interface modelMapper {
+public interface ModelMapper {
     
 }
