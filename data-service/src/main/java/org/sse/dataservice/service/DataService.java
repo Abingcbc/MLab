@@ -57,18 +57,19 @@ public class DataService {
         }
     }
 
-    public boolean createNewUserFolder(String username){
+    public int createNewUserFolder(String username){
         FileSystem fileSystem = null;
         try {
             fileSystem = FileSystem.get(configuration);
-            if (checkIsFileExisted(null, username) != 0) {
-                return false;
+            if (checkIsFileExisted(null, username) == 0) {
+                return 0;
             } else {
                 fileSystem.mkdirs(new Path(folderPath+"/"+username));
-                return true;
+                return 1;
             }
         } catch (IOException e) {
-            return false;
+            e.printStackTrace();
+            return -1;
         } finally {
             closeFileSystemOrSteam(fileSystem);
         }
@@ -84,6 +85,7 @@ public class DataService {
             }
             return fileSystem.exists(new Path(filePath)) ? 0 : 1;
         } catch (IOException e) {
+            e.printStackTrace();
             return -1;
         } finally {
             closeFileSystemOrSteam(fileSystem);
@@ -97,6 +99,7 @@ public class DataService {
             String filePath = folderPath+"/"+username+"/tmp/"+chunkId+filename;
             return fileSystem.exists(new Path(filePath)) ? 0 : 1;
         } catch (IOException e) {
+            e.printStackTrace();
             return -1;
         } finally {
             closeFileSystemOrSteam(fileSystem);
@@ -117,6 +120,7 @@ public class DataService {
                 return false;
             }
         } catch (IOException exception) {
+            exception.printStackTrace();
             return false;
         } finally {
             closeFileSystemOrSteam(fileSystem);
@@ -147,6 +151,7 @@ public class DataService {
                 return false;
             }
         } catch (Exception exception) {
+            exception.printStackTrace();
             return false;
         } finally {
             IOUtils.closeStream(outputStream);
@@ -167,6 +172,7 @@ public class DataService {
                 return 0;
             }
         } catch (Exception e) {
+            e.printStackTrace();
             return -1;
         } finally {
             closeFileSystemOrSteam(fileSystem);
