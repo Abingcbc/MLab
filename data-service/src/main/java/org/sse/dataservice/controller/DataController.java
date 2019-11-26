@@ -12,7 +12,6 @@ import java.io.*;
  * @author cbc
  */
 @RestController
-@RequestMapping(value = "/data")
 public class DataController {
 
     private final DataService dataService;
@@ -21,10 +20,9 @@ public class DataController {
         this.dataService = dataService;
     }
 
-    @PostMapping(value = "/newUser")
-    public void createNewUserFolder(@RequestBody JSONObject jsonObject,
+    @PostMapping(value = "/newUser/{username}")
+    public void createNewUserFolder(@PathVariable String username,
                                     HttpServletResponse response) {
-        String username = jsonObject.getString("username");
         int status = dataService.createNewUserFolder(username);
         if (status == 1) {
             response.setStatus(HttpServletResponse.SC_OK);
@@ -35,11 +33,10 @@ public class DataController {
         }
     }
 
-    @GetMapping(value = "/checkFile")
-    public void checkIsFileExisted(@RequestBody JSONObject jsonObject,
-                                   HttpServletResponse response) {
-        String username = jsonObject.getString("username");
-        String filename = jsonObject.getString("filename");
+    @GetMapping(value = "/checkFile/{username}/{filename}")
+    public void checkIsFileExisted(HttpServletResponse response,
+                                   @PathVariable String username,
+                                   @PathVariable String filename) {
         int status = dataService.checkIsFileExisted(filename, username);
         if (status == 1) {
             response.setStatus(HttpServletResponse.SC_OK);
@@ -50,12 +47,11 @@ public class DataController {
         }
     }
 
-    @GetMapping(value = "/checkChunk")
-    public void checkIsChunkExisted(@RequestBody JSONObject jsonObject,
-                                    HttpServletResponse response) {
-        String username = jsonObject.getString("username");
-        String filename = jsonObject.getString("filename");
-        int chunkId = jsonObject.getInteger("chunkId");
+    @GetMapping(value = "/checkChunk/{username}/{filename}/{chunkId}")
+    public void checkIsChunkExisted(HttpServletResponse response,
+                                    @PathVariable String username,
+                                    @PathVariable String filename,
+                                    @PathVariable int chunkId) {
         int status = dataService.checkIsChunkExisted(filename, username, chunkId);
         if (status == 1) {
             response.setStatus(HttpServletResponse.SC_OK);
@@ -66,13 +62,12 @@ public class DataController {
         }
     }
 
-    @PostMapping(value = "/upload")
+    @PostMapping(value = "/upload/{username}/{filename}/{chunkId}")
     public void uploadFile(@RequestParam("file") MultipartFile file,
-                           @RequestBody JSONObject jsonObject,
-                           HttpServletResponse response) {
-        String username = jsonObject.getString("username");
-        String filename = jsonObject.getString("filename");
-        int chunkId = jsonObject.getInteger("chunkId");
+                           HttpServletResponse response,
+                           @PathVariable String username,
+                           @PathVariable String filename,
+                           @PathVariable int chunkId) {
         if (dataService.saveChunk(file, filename, username, chunkId)) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
@@ -80,12 +75,11 @@ public class DataController {
         }
     }
 
-    @PostMapping(value = "/merge")
-    public void mergeFile(@RequestBody JSONObject jsonObject,
-                          HttpServletResponse response) {
-        String username = jsonObject.getString("username");
-        String filename = jsonObject.getString("filename");
-        int chunks = jsonObject.getInteger("chunks");
+    @PostMapping(value = "/merge/{username}/{filename}/{chunks}")
+    public void mergeFile(HttpServletResponse response,
+                          @PathVariable String username,
+                          @PathVariable String filename,
+                          @PathVariable int chunks) {
         try {
             if (dataService.merge(username, filename, chunks)) {
                 response.setStatus(HttpServletResponse.SC_OK);
@@ -97,11 +91,10 @@ public class DataController {
         }
     }
 
-    @GetMapping(value = "/download")
-    public void downloadFile(@RequestBody JSONObject jsonObject,
-                             HttpServletResponse response) {
-        String username = jsonObject.getString("username");
-        String filename = jsonObject.getString("filename");
+    @GetMapping(value = "/download/{username}/{filename}")
+    public void downloadFile(HttpServletResponse response,
+                             @PathVariable String username,
+                             @PathVariable String filename) {
         response.reset();
         response.addHeader("Content-Disposition", filename);
         OutputStream outputStream = null;

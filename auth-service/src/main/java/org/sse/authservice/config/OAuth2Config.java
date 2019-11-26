@@ -30,18 +30,25 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
     @Autowired
     private AuthService authService;
 
+    private BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
         clients.inMemory()
                 .withClient("browser")
-                .secret(new BCryptPasswordEncoder().encode("secret"))
+                .secret(encoder.encode("secret"))
                 .authorizedGrantTypes("refresh_token", "password")
                 .scopes("ui")
                 .and()
                 .withClient("auth-service")
-                .secret("{noop}secret")
+                .secret(encoder.encode("secret"))
                 .authorizedGrantTypes("refresh_token", "client_credentials")
-                .scopes("server");
+                .scopes("server")
+                .and()
+                .withClient("data-service")
+                .secret(encoder.encode("secret"))
+                .authorizedGrantTypes("refresh_token", "client_credentials")
+                .scopes("server");;
     }
 
     @Override
