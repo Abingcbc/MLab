@@ -21,18 +21,21 @@ public class DataController {
         this.dataService = dataService;
     }
 
-    @RequestMapping(value = "/newUser", method = RequestMethod.POST)
+    @PostMapping(value = "/newUser")
     public void createNewUserFolder(@RequestBody JSONObject jsonObject,
                                     HttpServletResponse response) {
         String username = jsonObject.getString("username");
-        if (dataService.createNewUserFolder(username)) {
+        int status = dataService.createNewUserFolder(username);
+        if (status == 1) {
             response.setStatus(HttpServletResponse.SC_OK);
-        } else {
+        } else if (status == 0){
             response.setStatus(HttpServletResponse.SC_CONFLICT);
+        } else {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
-    @RequestMapping(value = "/checkFile", method = RequestMethod.GET)
+    @GetMapping(value = "/checkFile")
     public void checkIsFileExisted(@RequestBody JSONObject jsonObject,
                                    HttpServletResponse response) {
         String username = jsonObject.getString("username");
@@ -47,7 +50,7 @@ public class DataController {
         }
     }
 
-    @RequestMapping(value = "/checkChunk", method = RequestMethod.GET)
+    @GetMapping(value = "/checkChunk")
     public void checkIsChunkExisted(@RequestBody JSONObject jsonObject,
                                     HttpServletResponse response) {
         String username = jsonObject.getString("username");
@@ -63,7 +66,7 @@ public class DataController {
         }
     }
 
-    @RequestMapping(value = "/upload", method = RequestMethod.POST)
+    @PostMapping(value = "/upload")
     public void uploadFile(@RequestParam("file") MultipartFile file,
                            @RequestBody JSONObject jsonObject,
                            HttpServletResponse response) {
@@ -77,7 +80,7 @@ public class DataController {
         }
     }
 
-    @RequestMapping(value = "/merge", method = RequestMethod.POST)
+    @PostMapping(value = "/merge")
     public void mergeFile(@RequestBody JSONObject jsonObject,
                           HttpServletResponse response) {
         String username = jsonObject.getString("username");
@@ -94,7 +97,7 @@ public class DataController {
         }
     }
 
-    @RequestMapping(value = "/download", method = RequestMethod.GET)
+    @GetMapping(value = "/download")
     public void downloadFile(@RequestBody JSONObject jsonObject,
                              HttpServletResponse response) {
         String username = jsonObject.getString("username");

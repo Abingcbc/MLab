@@ -18,6 +18,7 @@ public class HdfsConfig {
         org.apache.hadoop.conf.Configuration configuration =
                 new org.apache.hadoop.conf.Configuration();
         configuration.set("fs.defaultFS", hdfsPath);
+        configuration.setBoolean("fs.hdfs.impl.disable.cache", true);
         return configuration;
     }
 }
