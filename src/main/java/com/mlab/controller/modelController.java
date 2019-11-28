@@ -2,8 +2,8 @@ package com.mlab.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.mlab.entity.Model;
-import com.mlab.entity.Node;
+import com.mlab.domain.Model;
+import com.mlab.domain.Node;
 import com.mlab.service.ModelService;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;

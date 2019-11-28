@@ -1,4 +1,4 @@
-package com.mlab.entity;
+package com.mlab.domain;
 
 import java.util.*;
 

@@ -1,4 +1,4 @@
-package com.mlab.entity;
+package com.mlab.domain;
 
 import org.apache.spark.ml.PipelineStage;
 import org.apache.spark.ml.feature.Tokenizer;

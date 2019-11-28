@@ -1,4 +1,4 @@
-package com.mlab.entity;
+package com.mlab.domain;
 
 /**
  * @version: V1.0

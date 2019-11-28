@@ -1,7 +1,6 @@
-package com.mlab.entity;
+package com.mlab.domain;
 
 import com.alibaba.fastjson.JSONObject;
-import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;

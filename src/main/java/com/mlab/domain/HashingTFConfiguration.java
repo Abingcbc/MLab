@@ -1,8 +1,7 @@
-package com.mlab.entity;
+package com.mlab.domain;
 
 import org.apache.spark.ml.PipelineStage;
 import org.apache.spark.ml.feature.HashingTF;
-import org.apache.spark.ml.feature.Tokenizer;
 
 public class HashingTFConfiguration extends Configuartion{
     private String inputCol;

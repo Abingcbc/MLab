@@ -1,26 +1,14 @@
 package com.mlab.service;
 
 import com.alibaba.fastjson.JSONArray;
-import com.mlab.entity.Model;
-import com.mlab.entity.Node;
-import org.apache.hadoop.yarn.webapp.hamlet.Hamlet;
-import org.apache.spark.SparkConf;
-import org.apache.spark.api.java.JavaDoubleRDD;
+import com.mlab.domain.Model;
+import com.mlab.domain.Node;
 
 import org.apache.spark.ml.Pipeline;
-import org.apache.spark.ml.PipelineModel;
 import org.apache.spark.ml.PipelineStage;
-import org.apache.spark.ml.classification.LogisticRegression;
-import org.apache.spark.ml.feature.HashingTF;
-import org.apache.spark.ml.feature.Tokenizer;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SQLContext;
-import org.apache.spark.sql.SparkSession;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
