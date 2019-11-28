@@ -5,14 +5,14 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 
-/**   
+/**
  * @title: LabApplication
  * @package com.mlab.lab
- * @description: 
+ * @description:
  * @author: cyy
  * @date: 2019-11-19 11:55
- * @version: V1.0   
-*/
+ * @version: V1.0
+ */
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)

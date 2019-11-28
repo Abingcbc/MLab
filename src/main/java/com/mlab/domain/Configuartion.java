@@ -12,8 +12,10 @@ import org.apache.spark.ml.PipelineStage;
  **/
 public abstract class Configuartion {
     private String type;
+
     public String getType() {
         return type;
     }
+
     abstract public PipelineStage getPipelineStage();
 }

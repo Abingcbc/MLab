@@ -11,8 +11,9 @@ package com.mlab.domain;
 public class Link {
     private Node from;
     private Node to;
-    public Link(Node from, Node to){
-        this.from=from;
-        this.to=to;
+
+    public Link(Node from, Node to) {
+        this.from = from;
+        this.to = to;
     }
 }

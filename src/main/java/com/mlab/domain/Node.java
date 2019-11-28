@@ -20,51 +20,59 @@ public class Node {
     private List<Integer> succNodes;
     private int indegree;
 
-    public Node(Integer key){
-        this.prevNodes=new ArrayList<Integer>();
-        this.succNodes=new ArrayList<Integer>();
-        this.key=key;
-        this.config=null;
-        this.indegree=0;
+    public Node(Integer key) {
+        this.prevNodes = new ArrayList<Integer>();
+        this.succNodes = new ArrayList<Integer>();
+        this.key = key;
+        this.config = null;
+        this.indegree = 0;
     }
-    public void setKey(int k){
-        this.key=k;
+
+    public void setKey(int k) {
+        this.key = k;
     }
-    public Integer getKey(){
+
+    public Integer getKey() {
         return this.key;
     }
-    public void addPrev(Node node){
+
+    public void addPrev(Node node) {
         this.prevNodes.add(node.getKey());
-        this.indegree=prevNodes.size();
+        this.indegree = prevNodes.size();
     }
-    public void addSucc(Node node){
+
+    public void addSucc(Node node) {
         this.succNodes.add(node.getKey());
     }
-    public void setConfig(JSONObject  jsonObject){
-        String name=jsonObject.getString("name");
-        if(name=="Tokenizar"){
-            config=new TokenizerConfiguration(jsonObject.getString("inputCol"),jsonObject.getString("outputCol"));
-        }
-        else if(name=="HashingTF"){
-            config= new HashingTFConfiguration(jsonObject.getString("inputCol"),jsonObject.getString("outputCol"));
-        }
-        else if(name=="LogisticRegression"){
-            config=new LogisticRegressionConfiguration(jsonObject.getInteger("maxIter"), jsonObject.getDouble("regParam"));
+
+    public void setConfig(JSONObject jsonObject) {
+        String name = jsonObject.getString("name");
+        if (name == "Tokenizar") {
+            config = new TokenizerConfiguration(jsonObject.getString("inputCol"), jsonObject.getString("outputCol"));
+        } else if (name == "HashingTF") {
+            config = new HashingTFConfiguration(jsonObject.getString("inputCol"), jsonObject.getString("outputCol"));
+        } else if (name == "LogisticRegression") {
+            config = new LogisticRegressionConfiguration(jsonObject.getInteger("maxIter"), jsonObject.getDouble("regParam"));
         }
     }
-    public List<Integer> getPrevNodes(){
+
+    public List<Integer> getPrevNodes() {
         return prevNodes;
     }
-    public List<Integer> getSuccNodes(){
+
+    public List<Integer> getSuccNodes() {
         return succNodes;
     }
-    public Configuartion getConfig(){
+
+    public Configuartion getConfig() {
         return this.config;
     }
-    public int getIndegree(){
+
+    public int getIndegree() {
         return indegree;
     }
-    public  void setIndegree(int i){
-        indegree=i;
+
+    public void setIndegree(int i) {
+        indegree = i;
     }
 }

@@ -3,12 +3,12 @@ package com.mlab.domain;
 import org.apache.spark.ml.PipelineStage;
 import org.apache.spark.ml.classification.LogisticRegression;
 
-public class LogisticRegressionConfiguration extends Configuartion{
+public class LogisticRegressionConfiguration extends Configuartion {
 
-    public LogisticRegressionConfiguration(int maxIter, double param){
+    public LogisticRegressionConfiguration(int maxIter, double param) {
         super();
-        this.maxIter=maxIter;
-        this.param=param;
+        this.maxIter = maxIter;
+        this.param = param;
     }
 
     @Override

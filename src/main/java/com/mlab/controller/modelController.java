@@ -35,37 +35,23 @@ public class modelController {
     ModelService modelService;
 
     @RequestMapping(value = "/generate", method = RequestMethod.GET)
-    public void generate(@RequestBody JSONObject jsonObject){
-        JSONArray nodeArray=jsonObject.getJSONArray("nodeDataArray");
-        JSONArray linkArray=jsonObject.getJSONArray("linkDataArray");
-        String name=jsonObject.getString("class");
-        modelService.setModel(nodeArray,linkArray,name);
+    public Boolean generate(@RequestBody JSONObject jsonObject) {
+        JSONArray nodeArray = jsonObject.getJSONArray("nodeDataArray");
+        JSONArray linkArray = jsonObject.getJSONArray("linkDataArray");
+        String name = jsonObject.getString("class");
+        return modelService.setModel(nodeArray, linkArray, name);
     }
 
     @RequestMapping(value = "/view", method = RequestMethod.GET)
-    public Model view(@RequestBody JSONObject jsonObject){
+    public Model view(@RequestBody JSONObject jsonObject) {
         return modelService.viewModel(jsonObject.getString("class"));
     }
 
     @RequestMapping(value = "/download", method = RequestMethod.POST)
-    public ResponseEntity<byte[]> download(@RequestBody JSONPObject jsonpObject){
+    public ResponseEntity<byte[]> download(@RequestBody JSONPObject jsonpObject) {
         return null;
     }
 
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public List<Node> test(@RequestBody JSONObject jsonObject){
 
-        JSONArray nodeArray=jsonObject.getJSONArray("nodeDataArray");
-        JSONArray linkArray=jsonObject.getJSONArray("linkDataArray");
-        String name=jsonObject.getString("class");
-        return modelService.test(nodeArray,linkArray,name);
-    }
 
-    @RequestMapping(value = "/sparktest", method = RequestMethod.GET)
-    public void sparkTest(@RequestBody JSONObject jsonObject){
-        SparkSession spark= SparkSession.builder().appName("c").master("local").getOrCreate();
-        Dataset<Row>data=spark.read().format("libsvm").load("sample_libsvm_data.txt");
-        System.out.println(data.count());
-        spark.stop();
-    }
 }

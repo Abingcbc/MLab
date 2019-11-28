@@ -7,13 +7,14 @@ public class TokenizerConfiguration extends Configuartion {
     private String inputCol;
     private String outputCol;
 
-    public TokenizerConfiguration(String inputCol, String outputCol){
+    public TokenizerConfiguration(String inputCol, String outputCol) {
         super();
-        this.inputCol=inputCol;
-        this.outputCol=outputCol;
+        this.inputCol = inputCol;
+        this.outputCol = outputCol;
     }
+
     @Override
-    public PipelineStage getPipelineStage(){
+    public PipelineStage getPipelineStage() {
         return new Tokenizer().setInputCol(inputCol).setOutputCol(outputCol);
     }
 }

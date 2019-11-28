@@ -6,6 +6,7 @@ import com.mlab.domain.Node;
 
 import org.apache.spark.ml.Pipeline;
 import org.apache.spark.ml.PipelineStage;
+import org.apache.spark.sql.SparkSession;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ import java.util.List;
 @Service
 public class ModelService {
 
-    public void setModel(JSONArray nodeArray, JSONArray linkArray, String name) {
+    public Boolean setModel(JSONArray nodeArray, JSONArray linkArray, String name) {
         Model model = new Model(name);
         for (int i = 0; i < nodeArray.size(); ++i) {
             Node node = new Node(nodeArray.getJSONObject(i).getInteger("key"));
@@ -35,8 +36,10 @@ public class ModelService {
             int to = linkArray.getJSONObject(i).getInteger("to");
             model.setLink(from, to);
         }
-        model.tpSort();
-        generateSparkPipeline(model);
+        if(!model.tpSort()){
+            return false;
+        };
+        return generateSparkPipeline(model);
     }
 
     public Model viewModel(String name) {
@@ -44,30 +47,24 @@ public class ModelService {
         return model;
     }
 
-    public void generateSparkPipeline(Model model) {
+    public Boolean generateSparkPipeline(Model model) {
+        SparkSession spark=SparkSession.builder().appName(model.getName()).master("local").getOrCreate();
         ArrayList<PipelineStage> pipelineStages = new ArrayList<PipelineStage>();
         for (Node node : model.getNodeList()) {
-
+            pipelineStages.add(node.getConfig().getPipelineStage());
         }
         Pipeline pipeline = new Pipeline().setStages(pipelineStages.toArray(new PipelineStage[0]));
+        try {
+            pipeline.save("data/pipeline/");
+        }
+        catch (Exception e){
+            spark.stop();
+            return false;
+        }
 
+        spark.stop();
+        return true;
     }
 
-    public List<Node> test(JSONArray nodeArray, JSONArray linkArray, String name) {
-        Model model = new Model(name);
-        for (int i = 0; i < nodeArray.size(); ++i) {
-            Node node = new Node(nodeArray.getJSONObject(i).getInteger("key"));
-            node.setConfig(nodeArray.getJSONObject(i));
-            model.addNode(node);
-            System.out.println(node.getKey());
-        }
-        for (int i = 0; i < linkArray.size(); ++i) {
-            int from = linkArray.getJSONObject(i).getInteger("from");
-            int to = linkArray.getJSONObject(i).getInteger("to");
-            model.setLink(from, to);
-        }
-        model.tpSort();
-        return model.getNodeList();
-    }
 
 }
