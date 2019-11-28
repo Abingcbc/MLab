@@ -1,5 +1,7 @@
 package com.mlab.entity;
 
+import org.apache.spark.ml.PipelineStage;
+
 /**
  * @version: V1.0
  * @author: cyy
@@ -8,5 +10,10 @@ package com.mlab.entity;
  * @description: configuration for node
  * @data: 2019-11-23 7:32
  **/
-public class Configuartion {
+public abstract class Configuartion {
+    private String type;
+    public String getType() {
+        return type;
+    }
+    abstract public PipelineStage getPipelineStage();
 }
