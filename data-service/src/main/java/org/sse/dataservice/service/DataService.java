@@ -76,7 +76,7 @@ public class DataService {
         try {
             fileSystem = FileSystem.get(configuration);
             String filePath = folderPath+"/tmp/"+chunkId+fileId+".tmp";
-            return fileSystem.exists(new Path(filePath)) ? 0 : 1;
+            return fileSystem.exists(new Path(filePath)) ? 1 : 0;
         } catch (IOException e) {
             e.printStackTrace();
             return -1;

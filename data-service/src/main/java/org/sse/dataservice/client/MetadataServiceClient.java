@@ -14,12 +14,22 @@ public interface MetadataServiceClient {
     /**
      * request metadata service to get the permission of dataset
      * @param username username of dataset's owner
-     * @param filename requested dataset
+     * @param fileId requested dataset
      * @return 1 means public, 0 means private
      */
     @PreAuthorize(value = "#oauth2.hasScope('server')")
-    @GetMapping(value = "/datasetPermission/{username}/{filename}")
+    @GetMapping(value = "/datasetPermission/{username}/{fileId}")
     int getDatasetPermission(@PathVariable String username,
-                             @PathVariable String filename);
+                             @PathVariable String fileId);
 
+    /**
+     * check the dataset's owner's username
+     * @param username dataset id
+     * @param fileId dataset i
+     * @return 1 means OK, 0 means unauthenticated
+     */
+    @PreAuthorize(value = "#oauth2.hasScope('server')")
+    @GetMapping(value = "/datasetOwner/{username}/{fileId}")
+    int checkDatasetOwner(@PathVariable String username,
+                           @PathVariable String fileId);
 }

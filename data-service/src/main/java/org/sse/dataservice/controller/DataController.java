@@ -1,5 +1,6 @@
 package org.sse.dataservice.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.sse.dataservice.service.DataService;
@@ -24,9 +25,9 @@ public class DataController {
                                    @PathVariable String fileId,
                                    @PathVariable String format) {
         int status = dataService.checkIsFileExisted(fileId, format);
-        if (status == 1) {
+        if (status == 0) {
             response.setStatus(HttpServletResponse.SC_OK);
-        } else if (status == 0){
+        } else if (status == 1){
             response.setStatus(HttpServletResponse.SC_CONFLICT);
         } else {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -38,9 +39,9 @@ public class DataController {
                                     @PathVariable String fileId,
                                     @PathVariable int chunkId) {
         int status = dataService.checkIsChunkExisted(fileId, chunkId);
-        if (status == 1) {
+        if (status == 0) {
             response.setStatus(HttpServletResponse.SC_OK);
-        } else if (status == 0){
+        } else if (status == 1){
             response.setStatus(HttpServletResponse.SC_CONFLICT);
         } else {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
