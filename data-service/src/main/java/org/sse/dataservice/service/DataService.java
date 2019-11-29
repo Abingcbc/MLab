@@ -57,32 +57,11 @@ public class DataService {
         }
     }
 
-    public int createNewUserFolder(String username){
+    public int checkIsFileExisted(String fileId, String format) {
         FileSystem fileSystem = null;
         try {
             fileSystem = FileSystem.get(configuration);
-            if (checkIsFileExisted(null, username) == 0) {
-                return 0;
-            } else {
-                fileSystem.mkdirs(new Path(folderPath+"/"+username));
-                return 1;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return -1;
-        } finally {
-            closeFileSystemOrSteam(fileSystem);
-        }
-    }
-
-    public int checkIsFileExisted(String filename, String username) {
-        FileSystem fileSystem = null;
-        try {
-            fileSystem = FileSystem.get(configuration);
-            String filePath = folderPath+"/"+username;
-            if (filename != null) {
-                filePath += "/" + filename;
-            }
+            String filePath = folderPath+"/"+fileId+"."+format;
             return fileSystem.exists(new Path(filePath)) ? 0 : 1;
         } catch (IOException e) {
             e.printStackTrace();
@@ -92,11 +71,11 @@ public class DataService {
         }
     }
 
-    public int checkIsChunkExisted(String filename, String username, int chunkId) {
+    public int checkIsChunkExisted(String fileId, int chunkId) {
         FileSystem fileSystem = null;
         try {
             fileSystem = FileSystem.get(configuration);
-            String filePath = folderPath+"/"+username+"/tmp/"+chunkId+filename;
+            String filePath = folderPath+"/tmp/"+chunkId+fileId+".tmp";
             return fileSystem.exists(new Path(filePath)) ? 0 : 1;
         } catch (IOException e) {
             e.printStackTrace();
@@ -106,16 +85,16 @@ public class DataService {
         }
     }
 
-    public boolean saveChunk(MultipartFile multipartFile, String filename, String username, int chunkId) {
+    public boolean saveChunk(MultipartFile multipartFile, String fileId, int chunkId) {
         FileSystem fileSystem = null;
         try {
-            if (checkIsChunkExisted(filename, username, chunkId) == 0) {
+            if (checkIsChunkExisted(fileId, chunkId) == 0) {
                 fileSystem = FileSystem.get(configuration);
                 File file = multiPartFileToFile(multipartFile);
                 Path srcPath = new Path(file.getPath());
-                Path dstPath = new Path(folderPath+"/"+username+"/tmp/"+filename+"/"+chunkId+".tmp");
+                Path dstPath = new Path(folderPath+"/tmp/"+chunkId+fileId+".tmp");
                 fileSystem.copyFromLocalFile(srcPath, dstPath);
-                file.delete();
+                return file.delete();
             } else {
                 return false;
             }
@@ -125,19 +104,18 @@ public class DataService {
         } finally {
             closeFileSystemOrSteam(fileSystem);
         }
-        return true;
     }
 
-    public boolean merge(String username, String filename, int chunks) {
+    public boolean merge(String fileId, String format, int chunks) {
         FileSystem fileSystem = null;
         FSDataOutputStream outputStream = null;
         try {
-            if (checkIsFileExisted(filename, username) == 0) {
+            if (checkIsFileExisted(fileId, format) == 0) {
                 fileSystem = FileSystem.get(configuration);
                 outputStream = fileSystem.create(
-                        new Path(folderPath+"/"+username+"/"+filename), true);
+                        new Path(folderPath+"/"+fileId+"."+format), true);
                 for (int i = 0; i < chunks; i++) {
-                    Path tempPath = new Path(folderPath+"/"+username+"/tmp/"+chunks+filename);
+                    Path tempPath = new Path(folderPath+"/tmp/"+chunks+fileId+".tmp");
                     FSDataInputStream inputStream = fileSystem.open(tempPath);
                     // Here we can't directly use `copyBytes` to close stream
                     // because we still need outputStream to be open
@@ -159,13 +137,13 @@ public class DataService {
         }
     }
 
-    public int download(String username, String filename, OutputStream outputStream) {
+    public int download(String fileId, String format, OutputStream outputStream) {
         FileSystem fileSystem = null;
         FSDataInputStream inputStream = null;
         try {
-            if (checkIsFileExisted(filename, username) == 1) {
+            if (checkIsFileExisted(fileId, format) == 1) {
                 fileSystem = FileSystem.get(configuration);
-                inputStream = fileSystem.open(new Path(folderPath+"/"+username+"/"+filename));
+                inputStream = fileSystem.open(new Path(folderPath+"/"+fileId+"."+format));
                 IOUtils.copyBytes(inputStream, outputStream, 1024, true);
                 return 1;
             } else {

@@ -1,8 +1,7 @@
-package org.sse.dataservice;
+package org.sse.metadataservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
@@ -12,11 +11,10 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @SpringCloudApplication
 @EnableResourceServer
 @EnableOAuth2Client
-@EnableFeignClients
-public class DataServiceApplication {
+public class MetadataServiceApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(DataServiceApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(MetadataServiceApplication.class, args);
+	}
 
 }

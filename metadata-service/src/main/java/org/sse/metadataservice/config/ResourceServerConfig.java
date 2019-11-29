@@ -1,4 +1,4 @@
-package org.sse.dataservice.config;
+package org.sse.metadataservice.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -14,6 +14,7 @@ import org.springframework.security.oauth2.provider.expression.OAuth2WebSecurity
  */
 @Configuration
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
+
 
     @Autowired
     private OAuth2WebSecurityExpressionHandler expressionHandler;
@@ -33,10 +34,6 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/download/{username}/{filename}")
-                .access("@userSecurityService.checkDownloadPermission(authentication, #username, #filename)")
-                .antMatchers("/newUser/{username}/**")
-                .access("@userSecurityService.checkSameUser(authentication, #username)");
+                .anyRequest().permitAll();
     }
-
 }
