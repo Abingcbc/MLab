@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
  * @author cbc
  */
 @RestController
-@RequestMapping(value = "/user")
 public class UserController {
 
     @Autowired

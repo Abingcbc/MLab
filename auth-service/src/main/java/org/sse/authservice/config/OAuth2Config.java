@@ -48,7 +48,12 @@ public class OAuth2Config extends AuthorizationServerConfigurerAdapter {
                 .withClient("data-service")
                 .secret(encoder.encode("secret"))
                 .authorizedGrantTypes("refresh_token", "client_credentials")
-                .scopes("server");;
+                .scopes("server")
+                .and()
+                .withClient("metadata-service")
+                .secret(encoder.encode("secret"))
+                .authorizedGrantTypes("refresh_token", "client_credentials")
+                .scopes("server");
     }
 
     @Override
