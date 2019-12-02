@@ -1,6 +1,11 @@
-package com.mlab.domain;
+package com.mlab.domain.model;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mlab.domain.nodeconfig.NodeConfig;
+import com.mlab.domain.nodeconfig.HashingTFNodeConfig;
+import com.mlab.domain.nodeconfig.LogisticRegressionNodeConfig;
+import com.mlab.domain.nodeconfig.TokenizerNodeConfig;
+import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,12 +15,13 @@ import java.util.List;
  * @author: cyy
  * @className: model
  * @packageName: com.mlab.lab
- * @description: model
+ * @description: node
  * @data: 2019-11-19 13:39
  **/
+@Data
 public class Node {
     private int key;
-    private Configuartion config;
+    private NodeConfig config;
     private List<Integer> prevNodes;
     private List<Integer> succNodes;
     private int indegree;
@@ -26,14 +32,6 @@ public class Node {
         this.key = key;
         this.config = null;
         this.indegree = 0;
-    }
-
-    public void setKey(int k) {
-        this.key = k;
-    }
-
-    public Integer getKey() {
-        return this.key;
     }
 
     public void addPrev(Node node) {
@@ -48,31 +46,16 @@ public class Node {
     public void setConfig(JSONObject jsonObject) {
         String name = jsonObject.getString("name");
         if (name == "Tokenizar") {
-            config = new TokenizerConfiguration(jsonObject.getString("inputCol"), jsonObject.getString("outputCol"));
+            config = new TokenizerNodeConfig(jsonObject.getString("inputCol"), jsonObject.getString("outputCol"));
         } else if (name == "HashingTF") {
-            config = new HashingTFConfiguration(jsonObject.getString("inputCol"), jsonObject.getString("outputCol"));
+            config = new HashingTFNodeConfig(jsonObject.getString("inputCol"), jsonObject.getString("outputCol"));
         } else if (name == "LogisticRegression") {
-            config = new LogisticRegressionConfiguration(jsonObject.getInteger("maxIter"), jsonObject.getDouble("regParam"));
+            config = new LogisticRegressionNodeConfig(jsonObject.getInteger("maxIter"), jsonObject.getDouble("regParam"));
         }
     }
 
-    public List<Integer> getPrevNodes() {
-        return prevNodes;
-    }
-
-    public List<Integer> getSuccNodes() {
-        return succNodes;
-    }
-
-    public Configuartion getConfig() {
+    public NodeConfig getConfig() {
         return this.config;
     }
 
-    public int getIndegree() {
-        return indegree;
-    }
-
-    public void setIndegree(int i) {
-        indegree = i;
-    }
 }

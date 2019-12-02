@@ -1,11 +1,19 @@
-package com.mlab.domain;
+package com.mlab.domain.nodeconfig;
 
 import org.apache.spark.ml.PipelineStage;
 import org.apache.spark.ml.classification.LogisticRegression;
 
-public class LogisticRegressionConfiguration extends Configuartion {
+/**
+ * @version: V1.0
+ * @author: cyy
+ * @className: LogisticRegressionNodeConfig
+ * @packageName: com.mlab.domain.nodeconfig
+ * @description: LogisticRegression
+ * @data: 2019/12/2 下午12:42
+ **/
+public class LogisticRegressionNodeConfig extends NodeConfig {
 
-    public LogisticRegressionConfiguration(int maxIter, double param) {
+    public LogisticRegressionNodeConfig(int maxIter, double param) {
         super();
         this.maxIter = maxIter;
         this.param = param;

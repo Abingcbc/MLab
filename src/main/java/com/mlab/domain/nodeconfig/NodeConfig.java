@@ -1,4 +1,4 @@
-package com.mlab.domain;
+package com.mlab.domain.nodeconfig;
 
 import org.apache.spark.ml.PipelineStage;
 
@@ -10,7 +10,7 @@ import org.apache.spark.ml.PipelineStage;
  * @description: configuration for node
  * @data: 2019-11-23 7:32
  **/
-public abstract class Configuartion {
+public abstract class NodeConfig {
     private String type;
 
     public String getType() {

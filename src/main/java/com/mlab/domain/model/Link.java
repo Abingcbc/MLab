@@ -1,4 +1,7 @@
-package com.mlab.domain;
+package com.mlab.domain.model;
+
+import com.mlab.domain.model.Node;
+import lombok.Data;
 
 /**
  * @version: V1.0
@@ -8,6 +11,7 @@ package com.mlab.domain;
  * @description: line between nodes
  * @data: 2019-11-24 3:08
  **/
+@Data
 public class Link {
     private Node from;
     private Node to;

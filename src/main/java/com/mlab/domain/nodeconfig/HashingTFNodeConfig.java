@@ -1,13 +1,21 @@
-package com.mlab.domain;
+package com.mlab.domain.nodeconfig;
 
 import org.apache.spark.ml.PipelineStage;
 import org.apache.spark.ml.feature.HashingTF;
 
-public class HashingTFConfiguration extends Configuartion {
+/**
+ * @version: V1.0
+ * @author: cyy
+ * @className: HashingTFNodeConfig
+ * @packageName: com.mlab.domain.nodeconfig
+ * @description: HashTF
+ * @data: 2019/12/2 下午12:39
+ **/
+public class HashingTFNodeConfig extends NodeConfig {
     private String inputCol;
     private String outputCol;
 
-    public HashingTFConfiguration(String inputCol, String outputCol) {
+    public HashingTFNodeConfig(String inputCol, String outputCol) {
         super();
         this.inputCol = inputCol;
         this.outputCol = outputCol;

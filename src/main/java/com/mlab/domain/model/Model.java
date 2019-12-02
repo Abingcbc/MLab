@@ -1,4 +1,6 @@
-package com.mlab.domain;
+package com.mlab.domain.model;
+
+import lombok.Data;
 
 import java.util.*;
 
@@ -10,6 +12,8 @@ import java.util.*;
  * @description: model from json
  * @data: 2019-11-23 7:33
  **/
+
+@Data
 public class Model {
     private int id;
     private String username;
@@ -23,9 +27,6 @@ public class Model {
         this.name = name;
         nodeList = new ArrayList<Node>();
         linkList = new ArrayList<Link>();
-    }
-
-    public void excute() {
     }
 
     public Node getNodeByKey(int key) {
@@ -81,11 +82,4 @@ public class Model {
         return true;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public List<Node> getNodeList() {
-        return nodeList;
-    }
 }

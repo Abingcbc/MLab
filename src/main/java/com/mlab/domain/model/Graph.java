@@ -1,0 +1,31 @@
+package com.mlab.domain.model;
+
+
+
+import com.alibaba.fastjson.JSONArray;
+import jdk.nashorn.internal.objects.annotations.Getter;
+import jdk.nashorn.internal.objects.annotations.Setter;
+import lombok.Data;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+/**
+ * @version: 1.0
+ * @author: usr
+ * @className: Graph
+ * @packageName: com.mlab.domain.model
+ * @description: Graph
+ * @data: 2019-12-02 21:01
+ **/
+@Data
+public class Graph {
+    @Id
+    private String name;
+    private JSONArray nodeArray;
+    private JSONArray linkArray;
+    public Graph(String name, JSONArray n, JSONArray l){
+        this.name=name;
+        this.nodeArray=n;
+        this.linkArray=l;
+    }
+}

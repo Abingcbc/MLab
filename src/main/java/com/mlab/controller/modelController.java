@@ -2,21 +2,14 @@ package com.mlab.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.fasterxml.jackson.databind.util.JSONPObject;
-import com.mlab.domain.Model;
-import com.mlab.domain.Node;
+import com.mlab.domain.model.Graph;
+import com.mlab.domain.model.Model;
+import com.mlab.domain.TrainStatus;
 import com.mlab.service.ModelService;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SparkSession;
 import org.springframework.http.ResponseEntity;
 import com.alibaba.fastjson.JSONObject;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 /**
  * @version: V1.0
@@ -36,15 +29,12 @@ public class modelController {
 
     @RequestMapping(value = "/generate", method = RequestMethod.GET)
     public Boolean generate(@RequestBody JSONObject jsonObject) {
-        JSONArray nodeArray = jsonObject.getJSONArray("nodeDataArray");
-        JSONArray linkArray = jsonObject.getJSONArray("linkDataArray");
-        String name = jsonObject.getString("class");
-        return modelService.setModel(nodeArray, linkArray, name);
+        return modelService.setModel(jsonObject);
     }
 
-    @RequestMapping(value = "/view", method = RequestMethod.GET)
-    public Model view(@RequestBody JSONObject jsonObject) {
-        return modelService.viewModel(jsonObject.getString("class"));
+    @RequestMapping(value = "/edit", method = RequestMethod.GET)
+    public Graph view(@RequestParam(name = "name") String name) {
+        return modelService.viewModel(name);
     }
 
     @RequestMapping(value = "/download", method = RequestMethod.POST)
@@ -52,6 +42,11 @@ public class modelController {
         return null;
     }
 
-
+    @RequestMapping(value = "/train", method = RequestMethod.GET)
+    public boolean train(@RequestParam(name = "id") int id){
+        return modelService.pushIntoMq(id);
+    }
+    @RequestMapping(value = "/predict", method = RequestMethod.GET)
+    public Boolean predict(@RequestParam(name = "id") int id){return false;}
 
 }
