@@ -25,6 +25,7 @@ public class TrainController {
     public boolean train(@RequestParam(name = "id") int id){
         return trainService.pushIntoMq(id);
     }
+
     @RequestMapping(value = "/predict", method = RequestMethod.GET)
     public Boolean predict(@RequestParam(name = "id") int id){return false;}
 }

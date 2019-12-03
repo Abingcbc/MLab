@@ -33,11 +33,14 @@ public class ModelController {
     public Graph view(@RequestParam(name = "name") String name) {
         return modelService.viewModel(name);
     }
+
     @RequestMapping(value = "/download", method = RequestMethod.POST)
     public ResponseEntity<byte[]> download(@RequestBody JSONPObject jsonpObject) {
         return null;
     }
 
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+    public Boolean delete(@RequestParam(name="name") String name){return modelService.deleteModel(name);}
 
 
 }

@@ -58,7 +58,6 @@ public class ModelService {
             return false;
         }
         mongoDao.save(new Graph(name,nodeArray,linkArray));
-        //mongoDao.save(nodeArray.getJSONObject(0));
         //return generateSparkPipeline(model);
         return true;
     }
@@ -67,6 +66,10 @@ public class ModelService {
 
     public Graph viewModel(String name) {
         return mongoDao.findByName(name);
+    }
+    public Boolean deleteModel(String name){
+        mongoDao.deleteById(name);
+        return true;
     }
 
     public Boolean generateSparkPipeline(Model model) {
