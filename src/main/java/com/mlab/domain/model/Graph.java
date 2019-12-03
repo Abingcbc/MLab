@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSONArray;
 import jdk.nashorn.internal.objects.annotations.Getter;
 import jdk.nashorn.internal.objects.annotations.Setter;
 import lombok.Data;
+import org.bson.BsonArray;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -23,9 +24,9 @@ public class Graph {
     private String name;
     private JSONArray nodeArray;
     private JSONArray linkArray;
-    public Graph(String name, JSONArray n, JSONArray l){
+    public Graph(String name, JSONArray nodeArray, JSONArray linkArray){
         this.name=name;
-        this.nodeArray=n;
-        this.linkArray=l;
+        this.nodeArray=nodeArray;
+        this.linkArray=linkArray;
     }
 }
