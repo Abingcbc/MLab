@@ -18,9 +18,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @SpringBootApplication
 @EnableAsync
 @EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
-public class MLabApplication {
+public class ModelApplication {
     public static void main(String[] args) {
-        SpringApplication.run(MLabApplication.class, args);
+        SpringApplication.run(ModelApplication.class, args);
     }
 
 }
