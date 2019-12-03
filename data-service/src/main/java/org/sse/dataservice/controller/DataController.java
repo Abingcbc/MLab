@@ -1,5 +1,6 @@
 package org.sse.dataservice.controller;
 
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
