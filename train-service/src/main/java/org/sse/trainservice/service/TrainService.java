@@ -1,19 +1,13 @@
 package org.sse.trainservice.service;
 
-import org.apache.spark.ml.PipelineModel;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SparkSession;
+import org.springframework.amqp.rabbit.connection.CorrelationData;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.scheduling.annotation.Async;
-import org.sse.trainservice.domain.*;
+import org.sse.trainservice.configuration.RabbitConfig;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.Date;
 
 /**
  * @version: 1.0
@@ -25,39 +19,24 @@ import java.util.List;
  **/
 @Service
 public class TrainService {
+    @Autowired
+    RabbitTemplate rabbitTemplate;
 
-    @Autowired
-    private MessageQueue messageQueue;
-    @Autowired
-    private ResultPool resultPool;
-    @Autowired
-    ApplicationEventPublisher publisher;
 
-    public Boolean pushIntoMq(int id){
-        messageQueue.offer(id);
-        publisher.publishEvent(new TrainEvent(new Object()));
+
+    public Boolean pushIntoMq(Integer id){
+        CorrelationData correlationData = new CorrelationData(id.toString()+new Date());
+        rabbitTemplate.convertAndSend(RabbitConfig.TASK_EXCHANGE_NAME, RabbitConfig.TASK_ROUTING_NAME,id,correlationData);
         return true;
     }
 
     @Async
-    public List<String> trainModel(Integer id){
+    public void trainModel(Integer id){
+        while (true){
+            if(rabbitTemplate.receiveAndConvert()==null){
 
-        return null;
-    }
-
-    @EventListener
-    public void onTrainEvent(TrainEvent event){
-        if(messageQueue.isEmpty()){
-            return;
+            }
         }
-        if(resultPool.isFull()){
-            return;
-        }
-        Integer id= messageQueue.poll();
-        Result r=resultPool.getEmptySite();
-        r.setId(id);
-        r.setStatus(TrainStatus.TRAINING);
-        trainModel(id);
 
     }
 }
