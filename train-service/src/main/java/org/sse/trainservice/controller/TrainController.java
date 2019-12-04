@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.sse.trainservice.service.MailService;
 import org.sse.trainservice.service.TrainService;
 
 import java.time.LocalDateTime;
@@ -30,6 +31,8 @@ public class TrainController {
     TrainService trainService;
     @Autowired
     RabbitTemplate rabbitTemplate;
+    @Autowired
+    MailService mailService;
 
     @RequestMapping(value = "/train", method = RequestMethod.GET)
     public boolean train(@RequestParam(name = "id") int id){
@@ -41,9 +44,7 @@ public class TrainController {
 
     @RequestMapping(value = "/test", method = RequestMethod.GET)
     public boolean test(){
-        for (int i=0;i<10;++i){
-            trainService.pushIntoMq(i);
-        }
+        mailService.sendSimpleMail("caiyiyang1998@126.com","aaaaaaa","aaaaaaaaaa");
         return true;
     }
 

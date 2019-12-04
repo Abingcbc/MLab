@@ -6,6 +6,7 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.sse.trainservice.domain.ResultReceiver;
 import org.sse.trainservice.domain.TaskReceiver;
 
 /**
@@ -56,6 +57,9 @@ public class RabbitConfig {
     }
 
     @Bean
+    Binding bindingresult() { return BindingBuilder.bind(resultQueue()).to(resultExchange()).with(RESULT_ROUTING_NAME);}
+
+    @Bean
     public TaskReceiver taskReceiver1(){return new TaskReceiver("1");}
 
     @Bean
@@ -65,7 +69,7 @@ public class RabbitConfig {
     public TaskReceiver taskReceiver3(){return new TaskReceiver("3");}
 
     @Bean
-    Binding bindingresult() {
-        return BindingBuilder.bind(taskQueue()).to(taskExchange()).with(RESULT_ROUTING_NAME);
-    }
+    public ResultReceiver resultReceiver(){return new ResultReceiver();}
+
+
 }
