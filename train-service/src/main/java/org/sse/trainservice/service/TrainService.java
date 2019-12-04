@@ -25,18 +25,8 @@ public class TrainService {
 
 
     public Boolean pushIntoMq(Integer id){
-        CorrelationData correlationData = new CorrelationData(id.toString()+new Date());
-        rabbitTemplate.convertAndSend(RabbitConfig.TASK_EXCHANGE_NAME, RabbitConfig.TASK_ROUTING_NAME,id,correlationData);
+        rabbitTemplate.convertAndSend(RabbitConfig.TASK_EXCHANGE_NAME, RabbitConfig.TASK_ROUTING_NAME,id);
         return true;
     }
 
-    @Async
-    public void trainModel(Integer id){
-        while (true){
-            if(rabbitTemplate.receiveAndConvert()==null){
-
-            }
-        }
-
-    }
 }
