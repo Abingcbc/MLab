@@ -1,9 +1,9 @@
 package org.sse.dataservice.controller;
 
-import lombok.Getter;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.sse.dataservice.model.Chunk;
+import org.sse.dataservice.model.FileInfo;
 import org.sse.dataservice.service.DataService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -35,39 +35,30 @@ public class DataController {
         }
     }
 
-    @GetMapping(value = "/checkChunk/{fileId}/{chunkId}")
-    public void checkIsChunkExisted(HttpServletResponse response,
-                                    @PathVariable String fileId,
-                                    @PathVariable int chunkId) {
-        int status = dataService.checkIsChunkExisted(fileId, chunkId);
-        if (status == 0) {
-            response.setStatus(HttpServletResponse.SC_OK);
-        } else if (status == 1){
+    @GetMapping(value = "/checkChunk")
+    public void checkIsChunkExisted(HttpServletResponse response, Chunk chunk) {
+        Boolean status = dataService.checkIsChunkExisted(chunk);
+        if (status) {
             response.setStatus(HttpServletResponse.SC_CONFLICT);
         } else {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.setStatus(HttpServletResponse.SC_OK);
         }
     }
 
-    @PostMapping(value = "/upload/{fileId}/{chunkId}")
-    public void uploadFile(@RequestParam("file") MultipartFile file,
-                           HttpServletResponse response,
-                           @PathVariable String fileId,
-                           @PathVariable int chunkId) {
-        if (dataService.saveChunk(file, fileId, chunkId)) {
+    @PostMapping(value = "/upload")
+    public void uploadFile(Chunk chunk,
+                           HttpServletResponse response) {
+        if (dataService.saveChunk(chunk)) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.setStatus(HttpServletResponse.SC_CONFLICT);
         }
     }
 
-    @PostMapping(value = "/merge/{fileId}/{format}/{chunks}")
-    public void mergeFile(HttpServletResponse response,
-                          @PathVariable String fileId,
-                          @PathVariable String format,
-                          @PathVariable int chunks) {
+    @PostMapping(value = "/merge")
+    public void mergeFile(FileInfo fileInfo, HttpServletResponse response) {
         try {
-            if (dataService.merge(fileId, format, chunks)) {
+            if (dataService.merge(fileInfo)) {
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

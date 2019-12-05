@@ -3,9 +3,13 @@ package org.sse.dataservice.service;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.sse.dataservice.model.Chunk;
+import org.sse.dataservice.model.FileInfo;
 
 import java.io.*;
 import java.util.Objects;
@@ -15,6 +19,9 @@ import java.util.Objects;
  */
 @Service
 public class DataService {
+
+    @Autowired
+    RedisTemplate<Integer, String> redisTemplate;
 
     @Value("${hdfs.folderPath}")
     private String folderPath;
@@ -71,28 +78,18 @@ public class DataService {
         }
     }
 
-    public int checkIsChunkExisted(String fileId, int chunkId) {
-        FileSystem fileSystem = null;
-        try {
-            fileSystem = FileSystem.get(configuration);
-            String filePath = folderPath+"/tmp/"+chunkId+fileId+".tmp";
-            return fileSystem.exists(new Path(filePath)) ? 1 : 0;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return -1;
-        } finally {
-            closeFileSystemOrSteam(fileSystem);
-        }
+    public Boolean checkIsChunkExisted(Chunk chunk) {
+        return redisTemplate.opsForSet().isMember(chunk.getChunkNumber(), chunk.getIdentifier());
     }
 
-    public boolean saveChunk(MultipartFile multipartFile, String fileId, int chunkId) {
+    public boolean saveChunk(Chunk chunk) {
         FileSystem fileSystem = null;
         try {
-            if (checkIsChunkExisted(fileId, chunkId) == 0) {
+            if (checkIsChunkExisted(chunk)) {
                 fileSystem = FileSystem.get(configuration);
-                File file = multiPartFileToFile(multipartFile);
+                File file = multiPartFileToFile(chunk.getFile());
                 Path srcPath = new Path(file.getPath());
-                Path dstPath = new Path(folderPath+"/tmp/"+chunkId+fileId+".tmp");
+                Path dstPath = new Path(folderPath+"/tmp/"+chunk.getChunkNumber()+chunk.getFilename()+".tmp");
                 fileSystem.copyFromLocalFile(srcPath, dstPath);
                 return file.delete();
             } else {
@@ -106,16 +103,17 @@ public class DataService {
         }
     }
 
-    public boolean merge(String fileId, String format, int chunks) {
+    public boolean merge(FileInfo fileInfo) {
         FileSystem fileSystem = null;
         FSDataOutputStream outputStream = null;
         try {
-            if (checkIsFileExisted(fileId, format) == 0) {
+            if (checkIsFileExisted(String.valueOf(fileInfo.getId()),
+                    fileInfo.getType()) == 0) {
                 fileSystem = FileSystem.get(configuration);
                 outputStream = fileSystem.create(
-                        new Path(folderPath+"/"+fileId+"."+format), true);
-                for (int i = 0; i < chunks; i++) {
-                    Path tempPath = new Path(folderPath+"/tmp/"+chunks+fileId+".tmp");
+                        new Path(folderPath+"/"+fileInfo.getId()+"."+fileInfo.getType()), true);
+                for (int i = 0; i < fileInfo.getTotalChunkNum(); i++) {
+                    Path tempPath = new Path(folderPath+"/tmp/"+String.valueOf(i)+String.valueOf(fileInfo.getId())+".tmp");
                     FSDataInputStream inputStream = fileSystem.open(tempPath);
                     // Here we can't directly use `copyBytes` to close stream
                     // because we still need outputStream to be open
