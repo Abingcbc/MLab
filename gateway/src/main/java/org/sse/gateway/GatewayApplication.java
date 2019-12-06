@@ -33,7 +33,7 @@ public class GatewayApplication {
         public List<SwaggerResource> get() {
             List resources = new ArrayList<>();
             resources.add(swaggerResource("data-service", "/data-service/v2/api-docs", "2.0"));
-            resources.add(swaggerResource("auth-service", "/auth-service/v2/api-docs", "2.0"));
+            resources.add(swaggerResource("user-service", "/user-service/v2/api-docs", "2.0"));
             resources.add(swaggerResource("metadata-service", "/metadata-service/v2/api-docs", "2.0"));
             return resources;
         }

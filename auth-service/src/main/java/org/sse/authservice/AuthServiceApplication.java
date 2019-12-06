@@ -9,8 +9,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @author cbc
  */
 @SpringCloudApplication
-@EnableTransactionManagement
-@EnableSwagger2Doc
 public class AuthServiceApplication {
 
     public static void main(String[] args) {
