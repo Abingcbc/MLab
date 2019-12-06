@@ -1,7 +1,8 @@
-package org.sser.userservice.mapper;
+package org.sse.userservice.mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
+import org.sse.userservice.model.User;
 
 /**
  * @author cbc

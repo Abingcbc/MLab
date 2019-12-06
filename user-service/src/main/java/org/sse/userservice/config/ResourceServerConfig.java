@@ -1,4 +1,4 @@
-package org.sse.dataservice.config;
+package org.sse.userservice.config;
 
 import feign.RequestInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +38,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/download/{fileId}/{format}")
-                .access("@userSecurityService.checkDownloadPermission(authentication, #fileId)")
-                .antMatchers("/v2/**")
-                .permitAll();
+                .antMatchers("/register").permitAll()
+                .antMatchers("/v2/**").permitAll();
     }
 
     @Bean

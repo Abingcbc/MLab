@@ -1,4 +1,4 @@
-package org.sse.authservice.model;
+package org.sse.userservice.model;
 
 import lombok.Data;
 
