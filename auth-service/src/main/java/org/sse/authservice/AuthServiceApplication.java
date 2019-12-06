@@ -1,8 +1,8 @@
 package org.sse.authservice;
 
+import com.spring4all.swagger.EnableSwagger2Doc;
 import org.springframework.boot.SpringApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @SpringCloudApplication
 @EnableTransactionManagement
+@EnableSwagger2Doc
 public class AuthServiceApplication {
 
     public static void main(String[] args) {

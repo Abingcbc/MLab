@@ -39,7 +39,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/download/{fileId}/{format}")
-                .access("@userSecurityService.checkDownloadPermission(authentication, #fileId)");
+                .access("@userSecurityService.checkDownloadPermission(authentication, #fileId)")
+                .antMatchers("/v2/**")
+                .permitAll();
     }
 
     @Bean

@@ -27,15 +27,56 @@ public class AuthService implements UserDetailsService {
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-    public int register(String username, String password) {
+    public int register(String username, String password, String email) {
         if (userMapper.getUserAuthInfoByUsername(username) != null) {
             return 0;
         } else {
             password = passwordEncoder.encode(password);
-            if (userMapper.createNewUser(username, password) == 1) {
+            if (userMapper.createNewUser(username, password, email) == 1) {
                 return 1;
             } else {
                 return -1;
+            }
+        }
+    }
+
+    /**
+     * update user's information
+     * @param username new username
+     * @param oPassword origin password
+     * @param password new password
+     * @param email email
+     * @return -1: No such user
+     *         -2: Update email failed
+     *         -3: Update password or email failed
+     *         -4: origin password wrong
+     *         1: success
+     */
+    public int updateInfo(String username,
+                          String oPassword,
+                          String password,
+                          String email) {
+        if (userMapper.getUserAuthInfoByUsername(username) == null) {
+            return -1;
+        }
+        // no password update
+        if (oPassword == null) {
+            if (userMapper.updateEmail(username, email) == 1) {
+                return 1;
+            } else {
+                return -2;
+            }
+        } else {
+            if (userMapper.getUserAuthInfoByUsername(username).getPassword()
+                    .equals(passwordEncoder.encode(oPassword))) {
+                if (userMapper.updateInfo(username,
+                        passwordEncoder.encode(password), email) == 1) {
+                    return 1;
+                } else {
+                    return -3;
+                }
+            } else {
+                return -4;
             }
         }
     }

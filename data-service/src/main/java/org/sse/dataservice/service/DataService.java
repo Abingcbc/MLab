@@ -6,6 +6,7 @@ import org.apache.hadoop.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.sse.dataservice.model.Chunk;
@@ -13,6 +14,7 @@ import org.sse.dataservice.model.FileInfo;
 
 import java.io.*;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author cbc
@@ -21,7 +23,7 @@ import java.util.Objects;
 public class DataService {
 
     @Autowired
-    RedisTemplate<Integer, String> redisTemplate;
+    StringRedisTemplate redisTemplate;
 
     @Value("${hdfs.folderPath}")
     private String folderPath;
@@ -79,7 +81,7 @@ public class DataService {
     }
 
     public Boolean checkIsChunkExisted(Chunk chunk) {
-        return redisTemplate.opsForSet().isMember(chunk.getChunkNumber(), chunk.getIdentifier());
+        return redisTemplate.opsForSet().isMember(String.valueOf(chunk.getChunkNumber()), chunk.getIdentifier());
     }
 
     public boolean saveChunk(Chunk chunk) {
@@ -91,6 +93,8 @@ public class DataService {
                 Path srcPath = new Path(file.getPath());
                 Path dstPath = new Path(folderPath+"/tmp/"+chunk.getChunkNumber()+chunk.getFilename()+".tmp");
                 fileSystem.copyFromLocalFile(srcPath, dstPath);
+                redisTemplate.opsForSet().add(String.valueOf(chunk.getChunkNumber()), chunk.getIdentifier());
+                redisTemplate.expire(String.valueOf(chunk.getChunkNumber()), 60, TimeUnit.MINUTES);
                 return file.delete();
             } else {
                 return false;
@@ -113,7 +117,7 @@ public class DataService {
                 outputStream = fileSystem.create(
                         new Path(folderPath+"/"+fileInfo.getId()+"."+fileInfo.getType()), true);
                 for (int i = 0; i < fileInfo.getTotalChunkNum(); i++) {
-                    Path tempPath = new Path(folderPath+"/tmp/"+String.valueOf(i)+String.valueOf(fileInfo.getId())+".tmp");
+                    Path tempPath = new Path(folderPath+"/tmp/"+ i + fileInfo.getId() +".tmp");
                     FSDataInputStream inputStream = fileSystem.open(tempPath);
                     // Here we can't directly use `copyBytes` to close stream
                     // because we still need outputStream to be open

@@ -1,5 +1,6 @@
 package org.sse.authservice.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,11 +11,11 @@ import java.util.Collection;
 /**
  * @author cbc
  */
-@Getter
-@Setter
+@Data
 public class UserAuthInfo implements UserDetails {
     private String username;
     private String password;
+    private String email;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
