@@ -1,7 +1,6 @@
 package org.sse.dataservice.controller;
 
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.sse.dataservice.model.Chunk;
 import org.sse.dataservice.model.FileInfo;
 import org.sse.dataservice.service.DataService;
@@ -35,7 +34,7 @@ public class DataController {
         }
     }
 
-    @GetMapping(value = "/checkChunk")
+    @GetMapping(value = "/chunk")
     public void checkIsChunkExisted(HttpServletResponse response, Chunk chunk) {
         Boolean status = dataService.checkIsChunkExisted(chunk);
         if (status) {
@@ -45,7 +44,7 @@ public class DataController {
         }
     }
 
-    @PostMapping(value = "/upload")
+    @PostMapping(value = "/chunk")
     public void uploadFile(Chunk chunk,
                            HttpServletResponse response) {
         if (dataService.saveChunk(chunk)) {

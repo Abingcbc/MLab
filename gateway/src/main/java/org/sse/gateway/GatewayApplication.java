@@ -32,9 +32,9 @@ public class GatewayApplication {
         @Override
         public List<SwaggerResource> get() {
             List resources = new ArrayList<>();
-            resources.add(swaggerResource("data-service", "/data-service/v2/api-docs", "2.0"));
-            resources.add(swaggerResource("user-service", "/user-service/v2/api-docs", "2.0"));
-            resources.add(swaggerResource("metadata-service", "/metadata-service/v2/api-docs", "2.0"));
+            resources.add(swaggerResource("data-service", "/data-service/v2/api-docs", "1.0"));
+            resources.add(swaggerResource("user-service", "/user-service/v2/api-docs", "1.0"));
+            resources.add(swaggerResource("metadata-service", "/metadata-service/v2/api-docs", "1.0"));
             return resources;
         }
 
