@@ -21,4 +21,31 @@ public interface UserMapper {
      */
     @Select("select * from user where username = #{username}")
     User getUserByUsername(@Param("username") String username);
+
+    /**
+     * add like num
+     * @param likedUsername likedUsername
+     * @return is added
+     */
+    @Update("UPDATE mlab.user \n" +
+            "SET \n" +
+            "    `user`.like_num = `user`.like_num + 1\n" +
+            "WHERE\n" +
+            "    `user`.username =#{likedUsername};\n")
+    boolean addLikeNum(@Param("likedUsername") String likedUsername);
+
+    /**
+     * reduce like num
+     * @param likedUsername likedUsername
+     * @return is reduced
+     */
+    @Update("UPDATE mlab.user \n" +
+            "SET \n" +
+            "    `user`.like_num = `user`.like_num - 1\n" +
+            "WHERE\n" +
+            "    `user`.username =#{likedUsername};\n")
+    boolean reduceLikeNum(@Param("likedUsername") String likedUsername);
+
+
+
 }

@@ -7,6 +7,8 @@ import org.sse.community.mapper.ReplyMapper;
 import org.sse.community.model.Comment;
 import org.sse.community.model.Reply;
 
+import java.util.List;
+
 /**
  * @author HPY
  */
@@ -42,6 +44,10 @@ public class ReplyService {
         else {
             return replyMapper.getReplyByReplyId(id);
         }
+    }
+
+    public List<Reply> getRepliesByCommentId(long commentId,int start,int replyNum) {
+        return replyMapper.getRepliesByCommentId(commentId,start,replyNum);
     }
 
     public boolean deleteReply(long id) {

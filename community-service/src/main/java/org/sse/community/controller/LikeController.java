@@ -1,10 +1,8 @@
 package org.sse.community.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.sse.community.dto.LikeDTO;
 import org.sse.community.mapper.LikeMapper;
 import org.sse.community.model.Like;
 import org.sse.community.service.LikeService;
@@ -18,28 +16,23 @@ public class LikeController {
     @Autowired
     LikeService likeService;
 
-    @GetMapping("/like/post")
-    public boolean likePost(@RequestParam(value = "name") String username,
-                            @RequestParam(value = "post-id") long postId){
-        return likeService.setLikeOnPost(username,postId);
+    @PostMapping("/like/post")
+    public boolean likePost(@RequestBody LikeDTO likeDTO){
+        return likeService.setLikeOnPost(likeDTO);
     }
 
-    @GetMapping("/unlike/post")
-    public boolean unlikePost(@RequestParam(value = "name") String username,
-                              @RequestParam(value = "post-id") long postId){
-        return likeService.setUnlikeOnPost(username, postId);
+    @PostMapping("/unlike/post")
+    public boolean unlikePost(@RequestBody LikeDTO likeDTO){
+        return likeService.setUnlikeOnPost(likeDTO);
     }
 
-    @GetMapping("/like/comment")
-    public boolean likeComment(@RequestParam(value = "name") String username,
-                               @RequestParam(value = "comment-id") long commentId){
-        return likeService.setLikeOnComment(username,commentId);
+    @PostMapping("/like/comment")
+    public boolean likeComment(@RequestBody LikeDTO likeDTO) {
+        return likeService.setLikeOnComment(likeDTO);
     }
-
-    @GetMapping("/unlike/comment")
-    public boolean unlikeComment(@RequestParam(value = "name") String username,
-                                 @RequestParam(value = "comment-id") long commentId){
-        return likeService.setUnlikeOnComment(username,commentId);
+    @PostMapping("/unlike/comment")
+    public boolean unlikeComment(@RequestBody LikeDTO likeDTO){
+        return likeService.setUnlikeOnComment(likeDTO);
     }
 
 

@@ -10,6 +10,8 @@ import org.sse.community.mapper.PostMapper;
 import org.sse.community.mapper.UserMapper;
 import org.sse.community.model.Post;
 
+import java.util.List;
+
 /**
  * @author HPY
  */
@@ -25,16 +27,7 @@ public class PostService {
     CommentMapper commentMapper;
 
 
-    /**
-     * get post ordered by time
-     *
-     * @param start the start pos
-     * @param num   the num of post
-     * @return list of posts
-     */
-//    public List<Post> getPostOrderedByTime(int start, int num) {
-//        return postMapper.getPostOrderedByTime(start, num);
-//    }
+
 
     /**
      * post a post
@@ -63,6 +56,7 @@ public class PostService {
         } else {
             likeMapper.setStatusByTypeAndTypeId(0,postId);
             commentMapper.setStatusByPostId(postId);
+
             return postMapper.updatePostStatus(postId, status);
         }
 
@@ -70,6 +64,11 @@ public class PostService {
     }
 
 
+    /**
+     * get Post by id
+     * @param postId post id
+     * @return post
+     */
     public Post getPostByPostId(long postId){
         Post post = postMapper.getPostByPostId(postId);
         if(post==null){
@@ -81,5 +80,23 @@ public class PostService {
         else {
             return post;
         }
+    }
+
+    public List<Post> getPostsOrderByTime(int postNum,int pageNum,String str){
+        int start = postNum*pageNum-postNum;
+        int num=postNum;
+        String string = "%"+str+"%";
+        return postMapper.selectPostOrderByTime(start,num,string);
+    }
+
+    public int getNumOfPost() {
+        return postMapper.selectCount();
+    }
+
+    public List<Post> getPostsOrderByLikeNum(int postNum,int pageNum,String str){
+        int start = postNum*pageNum-postNum;
+        int num=postNum;
+        String string = "%"+str+"%";
+        return postMapper.selectPostOrderByLikeNum(start,num,string);
     }
 }

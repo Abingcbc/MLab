@@ -1,10 +1,13 @@
 package org.sse.community.model;
 
 
-public class Comment {
+/**
+ * @author HPY
+ */
+public class DComment {
 
-  private long commentId;
-  private long postId;
+  private long dCommentId;
+  private long datasetId;
   private String username;
   private String content;
   private java.sql.Timestamp createTime;
@@ -13,21 +16,21 @@ public class Comment {
   private long likeNum;
 
 
-  public long getCommentId() {
-    return commentId;
+  public long getDCommentId() {
+    return dCommentId;
   }
 
-  public void setCommentId(long commentId) {
-    this.commentId = commentId;
+  public void setDCommentId(long dCommentId) {
+    this.dCommentId = dCommentId;
   }
 
 
-  public long getPostId() {
-    return postId;
+  public long getDatasetId() {
+    return datasetId;
   }
 
-  public void setPostId(long postId) {
-    this.postId = postId;
+  public void setDatasetId(long datasetId) {
+    this.datasetId = datasetId;
   }
 
 

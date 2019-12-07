@@ -7,6 +7,7 @@ package org.sse.community.model;
 public class History {
 
   private long trainId;
+  private long runType;
   private String username;
   private long pipelineId;
   private long modelId;
@@ -20,6 +21,15 @@ public class History {
 
   public void setTrainId(long trainId) {
     this.trainId = trainId;
+  }
+
+
+  public long getRunType() {
+    return runType;
+  }
+
+  public void setRunType(long runType) {
+    this.runType = runType;
   }
 
 

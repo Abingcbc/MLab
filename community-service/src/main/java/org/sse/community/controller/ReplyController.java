@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import org.sse.community.model.Reply;
 import org.sse.community.service.ReplyService;
 
+import java.util.List;
+
 /**
  * @author HPY
  */
@@ -22,6 +24,14 @@ public class ReplyController {
     @GetMapping("/{id}")
     public Reply getReplyByReplyId(@PathVariable long id){
         return replyService.getReplyByReplyId(id);
+    }
+
+    @GetMapping("/get-replies-of-comment/{commentId}")
+    public List<Reply> getRepliesOfComment(@PathVariable long commentId,
+                                           @RequestParam("page") int page,
+                                           @RequestParam("reply") int reply) {
+        int start = page*reply-reply;
+        return replyService.getRepliesByCommentId(commentId,start,reply);
     }
 
     @GetMapping("/delete/{id}")

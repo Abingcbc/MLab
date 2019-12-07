@@ -1,9 +1,6 @@
 package org.sse.community.model;
 
 
-/**
- * @author HPY
- */
 public class Reply {
 
   private long replyId;

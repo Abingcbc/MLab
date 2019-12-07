@@ -7,6 +7,8 @@ import org.sse.community.model.Post;
 import org.sse.community.service.CommentService;
 import org.sse.community.service.PostService;
 
+import java.util.List;
+
 /**
  * @author HPY
  */
@@ -34,5 +36,12 @@ public class CommentController {
     boolean deleteComment(@PathVariable long commentId) {
 
         return commentService.deleteComment(commentId);
+    }
+    @GetMapping("/get-comments-of-post/{postId}")
+    List<Comment> getCommentsOfPost(@PathVariable long postId,
+                                    @RequestParam("page") int pageNum,
+                                    @RequestParam("comment") int commentNum) {
+        return commentService.getCommentsByPostId(postId,pageNum,commentNum);
+
     }
 }

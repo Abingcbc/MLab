@@ -6,6 +6,8 @@ import org.sse.community.model.Comment;
 import org.sse.community.model.Post;
 import org.sse.community.model.Reply;
 
+import java.util.List;
+
 /**
  * @author HPY
  */
@@ -45,6 +47,34 @@ public interface CommentMapper {
         }
     )
     Comment getCommentById(@Param("id") long Id);
+
+    /**
+     * get comments by post id
+     * @param postId post id
+     * @param start start
+     * @param commentNum comment num
+     * @return list of comments
+     */
+    @Select("SELECT \n" +
+            "    *\n" +
+            "FROM\n" +
+            "    comment\n" +
+            "WHERE\n" +
+            "    post_id = 4 AND `status` = 0\n" +
+            "ORDER BY comment_id DESC\n" +
+            "LIMIT #{start} , #{commentNum}")
+    @Results(value ={
+            @Result(property = "commentId",column = "comment_id"),
+            @Result(property = "postId",column = "post_id"),
+            @Result(property = "createTime",column = "create_time"),
+            @Result(property = "replyNum",column = "reply_num"),
+            @Result(property = "likeNum",column = "like_num")
+        }
+    )
+    List<Comment> getCommentsByPostId(@Param("postId") long postId,
+                                      @Param("start") int start,
+                                      @Param("commentNum") int commentNum);
+
 
     /**
      * set comment status = 1

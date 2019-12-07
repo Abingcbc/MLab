@@ -52,4 +52,33 @@ public class PostController {
     public boolean deleteAPost( @PathVariable int postId){
         return postService.deleteAPost(postId,1);
     }
+
+    @GetMapping("/get-order-by-time")
+    public List<Post> getPageOfPostsByTime(@RequestParam("page") int pageNum,@RequestParam("post") int postNum){
+        return postService.getPostsOrderByTime(postNum,pageNum,"");
+    }
+
+    @PostMapping("/search-order-by-time")
+    public List<Post> searchPostsOrderByTime(@RequestParam("page") int pageNum,
+                                             @RequestParam("post") int postNum,
+                                             @RequestBody String string) {
+        return postService.getPostsOrderByTime(postNum,pageNum,string);
+    }
+
+
+    @GetMapping("/get-order-by-like")
+    public List<Post> getPageOfPostsByLike(@RequestParam("page") int pageNum,@RequestParam("post") int postNum){
+        return postService.getPostsOrderByLikeNum(postNum,pageNum,"");
+    }
+    @PostMapping("/search-order-by-like")
+    public List<Post> searchPostsOrderByLike(@RequestParam("page") int pageNum,
+                                             @RequestParam("post") int postNum,
+                                             @RequestBody String string) {
+        return postService.getPostsOrderByLikeNum(postNum,pageNum,string);
+    }
+
+    @GetMapping("/num")
+    public int getNumOfPost(){
+        return postService.getNumOfPost();
+    }
 }

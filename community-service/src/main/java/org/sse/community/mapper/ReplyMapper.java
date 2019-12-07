@@ -4,6 +4,8 @@ import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 import org.sse.community.model.Reply;
 
+import java.util.List;
+
 /**
  * @author HPY
  */
@@ -48,6 +50,32 @@ public interface ReplyMapper {
             @Result(property = "createTime",column = "create_time")
     })
     Reply getReplyByReplyId(@Param("replyId") long id);
+
+    /**
+     * get list of replies by comment id
+     * @param commentId comment id
+     * @param start start
+     * @param replyNum reply num
+     * @return list of replies
+     */
+    @Select("SELECT \n" +
+            "    *\n" +
+            "FROM\n" +
+            "    reply\n" +
+            "WHERE\n" +
+            "    comment_id = #{commentId} AND `status` = 0\n" +
+            "ORDER BY reply_id DESC\n" +
+            "LIMIT #{start} , #{replyNum}")
+    @Results(value = {
+            @Result(property = "replyId",column = "reply_id"),
+            @Result(property = "commentId",column = "comment_id"),
+            @Result(property = "createTime",column = "create_time")
+    })
+    List<Reply> getRepliesByCommentId(@Param("commentId") long commentId,
+                                      @Param("start") int start,
+                                      @Param("replyNum") int replyNum);
+
+
 
     /**
      * set status = 1 by comment id

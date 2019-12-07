@@ -11,6 +11,8 @@ import org.sse.community.mapper.ReplyMapper;
 import org.sse.community.model.Comment;
 import org.sse.community.model.Post;
 
+import java.util.List;
+
 /**
  * @author HPY
  */
@@ -50,6 +52,12 @@ public class CommentService {
         else {
             return commentMapper.getCommentById(commentId);
         }
+    }
+
+    public List<Comment> getCommentsByPostId(long postId,int pageNum,int commentNum) {
+        int start=pageNum*commentNum-commentNum;
+
+        return commentMapper.getCommentsByPostId(postId,start,commentNum);
     }
 
     @Transactional(rollbackFor = Exception.class)

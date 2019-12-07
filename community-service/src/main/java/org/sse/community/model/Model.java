@@ -1,9 +1,6 @@
 package org.sse.community.model;
 
 
-/**
- * @author HPY
- */
 public class Model {
 
   private long modelId;

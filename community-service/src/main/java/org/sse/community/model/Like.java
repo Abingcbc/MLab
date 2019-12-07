@@ -1,9 +1,6 @@
 package org.sse.community.model;
 
 
-/**
- * @author HPY
- */
 public class Like {
 
   private long likeId;
