@@ -3,18 +3,33 @@ package org.sse.dataservice.service;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.sse.dataservice.client.MetadataServiceClient;
+import org.sse.dataservice.model.Chunk;
+import org.sse.dataservice.model.Dataset;
+import org.sse.dataservice.model.FileInfo;
+import org.sse.dataservice.model.Result;
 
 import java.io.*;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author cbc
  */
 @Service
 public class DataService {
+
+    @Autowired
+    StringRedisTemplate redisTemplate;
+
+    @Autowired
+    MetadataServiceClient metadataServiceClient;
 
     @Value("${hdfs.folderPath}")
     private String folderPath;
@@ -71,29 +86,21 @@ public class DataService {
         }
     }
 
-    public int checkIsChunkExisted(String fileId, int chunkId) {
-        FileSystem fileSystem = null;
-        try {
-            fileSystem = FileSystem.get(configuration);
-            String filePath = folderPath+"/tmp/"+chunkId+fileId+".tmp";
-            return fileSystem.exists(new Path(filePath)) ? 0 : 1;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return -1;
-        } finally {
-            closeFileSystemOrSteam(fileSystem);
-        }
+    public Boolean checkIsChunkExisted(Chunk chunk) {
+        return redisTemplate.opsForSet().isMember(String.valueOf(chunk.getChunkNumber()), chunk.getIdentifier());
     }
 
-    public boolean saveChunk(MultipartFile multipartFile, String fileId, int chunkId) {
+    public boolean saveChunk(Chunk chunk) {
         FileSystem fileSystem = null;
         try {
-            if (checkIsChunkExisted(fileId, chunkId) == 0) {
+            if (checkIsChunkExisted(chunk)) {
                 fileSystem = FileSystem.get(configuration);
-                File file = multiPartFileToFile(multipartFile);
+                File file = multiPartFileToFile(chunk.getFile());
                 Path srcPath = new Path(file.getPath());
-                Path dstPath = new Path(folderPath+"/tmp/"+chunkId+fileId+".tmp");
+                Path dstPath = new Path(folderPath+"/tmp/"+chunk.getChunkNumber()+chunk.getFilename()+".tmp");
                 fileSystem.copyFromLocalFile(srcPath, dstPath);
+                redisTemplate.opsForSet().add(String.valueOf(chunk.getChunkNumber()), chunk.getIdentifier());
+                redisTemplate.expire(String.valueOf(chunk.getChunkNumber()), 60, TimeUnit.MINUTES);
                 return file.delete();
             } else {
                 return false;
@@ -106,16 +113,25 @@ public class DataService {
         }
     }
 
-    public boolean merge(String fileId, String format, int chunks) {
+    public boolean merge(FileInfo fileInfo) {
         FileSystem fileSystem = null;
         FSDataOutputStream outputStream = null;
+        ResponseEntity<Result> responseEntity = metadataServiceClient
+                .createNewDataset(new Dataset(fileInfo.getUsername(),
+                        fileInfo.getDatasetName(), fileInfo.getDescription(),
+                        fileInfo.getFormat(), fileInfo.getSize(), fileInfo.getIsPublic()
+                ));
+        Result result = responseEntity.getBody();
         try {
-            if (checkIsFileExisted(fileId, format) == 0) {
+            if (result == null) {
+                return false;
+            }
+            if (checkIsFileExisted(result.getMsg(), fileInfo.getFormat()) == 0) {
                 fileSystem = FileSystem.get(configuration);
                 outputStream = fileSystem.create(
-                        new Path(folderPath+"/"+fileId+"."+format), true);
-                for (int i = 0; i < chunks; i++) {
-                    Path tempPath = new Path(folderPath+"/tmp/"+chunks+fileId+".tmp");
+                        new Path(folderPath+"/"+result.getMsg()+"."+fileInfo.getFormat()), true);
+                for (int i = 0; i < fileInfo.getTotalChunkNum(); i++) {
+                    Path tempPath = new Path(folderPath+"/tmp/"+ i + result.getMsg() +".tmp");
                     FSDataInputStream inputStream = fileSystem.open(tempPath);
                     // Here we can't directly use `copyBytes` to close stream
                     // because we still need outputStream to be open
@@ -130,6 +146,7 @@ public class DataService {
             }
         } catch (Exception exception) {
             exception.printStackTrace();
+            metadataServiceClient.deleteDataset(Long.valueOf(result.getMsg()));
             return false;
         } finally {
             IOUtils.closeStream(outputStream);

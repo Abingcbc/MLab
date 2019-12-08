@@ -19,18 +19,16 @@ public class UserSecurityService {
     @Autowired
     MetadataServiceClient metaDataServiceClient;
 
-    public boolean checkSameUser(Authentication authentication, String username) {
+    public boolean checkSameUser(Authentication authentication, String fileId) {
         // Default getPrincipal() returns username which is only info we need here
         // so we choose not to customize the UserDetails.
-        return authentication.getPrincipal().equals(username);
+        return metaDataServiceClient.checkDatasetOwner(
+                (String)authentication.getPrincipal(), fileId) == 1;
     }
 
     public boolean checkDownloadPermission(Authentication authentication,
-                                           String username, String filename) {
-        if (checkSameUser(authentication, username)) {
-            return true;
-        } else {
-            return metaDataServiceClient.getDatasetPermission(username, filename) == 1;
-        }
+                                           String fileId) {
+        return metaDataServiceClient.getDatasetPermission(
+                (String)authentication.getPrincipal(), fileId) == 1;
     }
 }
