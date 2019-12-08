@@ -1,9 +1,14 @@
 package org.sse.dataservice.client;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.sse.dataservice.model.Dataset;
+import org.sse.dataservice.model.Result;
 
 /**
  * @author cbc
@@ -31,7 +36,21 @@ public interface MetadataServiceClient {
     @PreAuthorize(value = "#oauth2.hasScope('server')")
     @GetMapping(value = "/datasetOwner/{username}/{fileId}")
     int checkDatasetOwner(@PathVariable String username,
-                           @PathVariable String fileId);
+                          @PathVariable String fileId);
 
+    /**
+     * create new dataset
+     * @param dataset object of dataset
+     * @return 200 or 500
+     */
+    @PreAuthorize(value = "#oauth2.hasScope('server')")
+    @PostMapping(value = "/dataset")
+    ResponseEntity<Result> createNewDataset(@RequestBody Dataset dataset);
 
+    /**
+     * delete dataset
+     * @param datasetId
+     */
+    @PostMapping(value = "/dataset_delete")
+    void deleteDataset(@RequestBody Long datasetId);
 }

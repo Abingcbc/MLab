@@ -10,10 +10,12 @@ import java.io.Serializable;
 @Data
 public class FileInfo implements Serializable {
 
-    private Long id;
-    private String filename;
+    private String username;
+    private String datasetName;
+    private String description;
+    private Long size;
+    private String format;
+    private Long isPublic;
     private String identifier;
-    private Long totalSize;
-    private String type;
     private Integer totalChunkNum;
 }

@@ -17,5 +17,6 @@ public class Dataset {
   private double size;
   private java.sql.Timestamp createTime;
   private long isPublic;
+  private long status;
 
 }

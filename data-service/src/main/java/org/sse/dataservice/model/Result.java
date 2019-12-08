@@ -1,4 +1,4 @@
-package org.sse.metadataservice.model;
+package org.sse.dataservice.model;
 
 import lombok.Data;
 

@@ -5,12 +5,15 @@ import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.sse.dataservice.client.MetadataServiceClient;
 import org.sse.dataservice.model.Chunk;
+import org.sse.dataservice.model.Dataset;
 import org.sse.dataservice.model.FileInfo;
+import org.sse.dataservice.model.Result;
 
 import java.io.*;
 import java.util.Objects;
@@ -24,6 +27,9 @@ public class DataService {
 
     @Autowired
     StringRedisTemplate redisTemplate;
+
+    @Autowired
+    MetadataServiceClient metadataServiceClient;
 
     @Value("${hdfs.folderPath}")
     private String folderPath;
@@ -110,14 +116,22 @@ public class DataService {
     public boolean merge(FileInfo fileInfo) {
         FileSystem fileSystem = null;
         FSDataOutputStream outputStream = null;
+        ResponseEntity<Result> responseEntity = metadataServiceClient
+                .createNewDataset(new Dataset(fileInfo.getUsername(),
+                        fileInfo.getDatasetName(), fileInfo.getDescription(),
+                        fileInfo.getFormat(), fileInfo.getSize(), fileInfo.getIsPublic()
+                ));
+        Result result = responseEntity.getBody();
         try {
-            if (checkIsFileExisted(String.valueOf(fileInfo.getId()),
-                    fileInfo.getType()) == 0) {
+            if (result == null) {
+                return false;
+            }
+            if (checkIsFileExisted(result.getMsg(), fileInfo.getFormat()) == 0) {
                 fileSystem = FileSystem.get(configuration);
                 outputStream = fileSystem.create(
-                        new Path(folderPath+"/"+fileInfo.getId()+"."+fileInfo.getType()), true);
+                        new Path(folderPath+"/"+result.getMsg()+"."+fileInfo.getFormat()), true);
                 for (int i = 0; i < fileInfo.getTotalChunkNum(); i++) {
-                    Path tempPath = new Path(folderPath+"/tmp/"+ i + fileInfo.getId() +".tmp");
+                    Path tempPath = new Path(folderPath+"/tmp/"+ i + result.getMsg() +".tmp");
                     FSDataInputStream inputStream = fileSystem.open(tempPath);
                     // Here we can't directly use `copyBytes` to close stream
                     // because we still need outputStream to be open
@@ -132,6 +146,7 @@ public class DataService {
             }
         } catch (Exception exception) {
             exception.printStackTrace();
+            metadataServiceClient.deleteDataset(Long.valueOf(result.getMsg()));
             return false;
         } finally {
             IOUtils.closeStream(outputStream);

@@ -2,8 +2,8 @@ package org.sse.metadataservice.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.sse.metadataservice.mapper.*;
-import org.sse.metadataservice.model.*;
+import org.sse.metadataservice.mapper.DatasetMapper;
+import org.sse.metadataservice.model.Dataset;
 
 import java.util.List;
 
@@ -11,45 +11,13 @@ import java.util.List;
  * @author cbc
  */
 @Service
-public class MetadataService {
+public class DatasetService {
 
     @Autowired
     DatasetMapper datasetMapper;
 
-    @Autowired
-    HistoryMapper historyMapper;
-
-    @Autowired
-    ModelMapper modelMapper;
-
-    @Autowired
-    NodeMapper nodeMapper;
-
-    @Autowired
-    PipelineMapper pipelineMapper;
-
     public List<Dataset> getAllDatasetByUsername(String username) {
         return datasetMapper.getAllDatasetByUsername(username);
-    }
-
-    public List<History> getAllTrainByUsername(String username) {
-        return historyMapper.getAllTrainByUsername(username);
-    }
-
-    public List<History> getAllTestByUsername(String username) {
-        return historyMapper.getAllTestByUsername(username);
-    }
-
-    public List<Model> getAllModelByUsername(String username) {
-        return modelMapper.getAllModelByUsername(username);
-    }
-
-    public List<Node> getAllNodeByUsername(String username) {
-        return nodeMapper.getAllNodeByUsername(username);
-    }
-
-    public List<Pipeline> getAllPipelineByUsername(String username) {
-        return pipelineMapper.getAllPipelineByUsername(username);
     }
 
     public Long createNewDataset(Dataset dataset) {
@@ -58,6 +26,14 @@ public class MetadataService {
         } else {
             return (long) -1;
         }
+    }
+
+    public Dataset getDatasetById(Long datasetId) {
+        return datasetMapper.getDatasetById(datasetId);
+    }
+
+    public void deleteDataset(Long datasetId) {
+        datasetMapper.deleteDatasetById(datasetId);
     }
 
     public int getDatasetPermission(String username, Long datasetId) {
@@ -77,5 +53,4 @@ public class MetadataService {
             return 0;
         }
     }
-
 }
