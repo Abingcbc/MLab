@@ -40,6 +40,7 @@ public class TaskReceiver {
         Map<String,String> map=new HashMap<String, String>();
         map.put("to","caiyiyang1998@126.com");
         map.put("subject","已完成任务训练："+id.toString());
+        map.put("content","已完成任务训练："+id.toString());
         rabbitTemplate.convertAndSend(RabbitConfig.RESULT_EXCHANGE_NAME, RabbitConfig.RESULT_ROUTING_NAME,map);
     }
 

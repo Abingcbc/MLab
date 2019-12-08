@@ -3,6 +3,7 @@ package org.sse.modelservice.domain.model;
 
 
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import jdk.nashorn.internal.objects.annotations.Getter;
 import jdk.nashorn.internal.objects.annotations.Setter;
 import lombok.Data;
@@ -20,13 +21,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
  **/
 @Data
 public class Graph {
-    @Id
-    private String name;
-    private JSONArray nodeArray;
-    private JSONArray linkArray;
-    public Graph(String name, JSONArray nodeArray, JSONArray linkArray){
-        this.name=name;
-        this.nodeArray=nodeArray;
-        this.linkArray=linkArray;
+    private int id;
+    private JSONObject model;
+    public Graph(int id, JSONObject object){
+        this.id=id;
+        this.model=object;
     }
 }

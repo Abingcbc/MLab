@@ -24,6 +24,9 @@ public class LogisticRegressionNodeConfig extends NodeConfig {
         return new LogisticRegression().setMaxIter(maxIter).setRegParam(param);
     }
 
+    private int aggregationDepth;
+    private double elasticNetParam;
+    private double tol;
     private int maxIter;
     private double param;
 }

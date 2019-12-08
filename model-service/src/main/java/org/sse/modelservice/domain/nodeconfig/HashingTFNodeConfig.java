@@ -14,6 +14,8 @@ import org.apache.spark.ml.feature.HashingTF;
 public class HashingTFNodeConfig extends NodeConfig {
     private String inputCol;
     private String outputCol;
+    private Boolean binary;
+    private Integer numFeatures;
 
     public HashingTFNodeConfig(String inputCol, String outputCol) {
         super();

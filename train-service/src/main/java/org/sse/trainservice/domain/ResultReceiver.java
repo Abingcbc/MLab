@@ -29,6 +29,7 @@ public class ResultReceiver {
         System.out.println("邮件监听器已收到消息");
         String to=map.get("to");
         String subject=map.get("subject");
-        mailService.sendSimpleMail(to,subject,"aaaaaaaa");
+        String content=map.get("content");
+        mailService.sendSimpleMail(to,subject,content);
     }
 }

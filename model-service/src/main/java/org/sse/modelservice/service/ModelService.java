@@ -2,6 +2,7 @@ package org.sse.modelservice.service;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import org.sse.modelservice.client.DataServiceClient;
 import org.sse.modelservice.repository.MongoDao;
 import org.sse.modelservice.domain.model.Graph;
 import org.sse.modelservice.domain.model.Model;
@@ -29,6 +30,8 @@ public class ModelService {
 
     @Autowired
     MongoDao mongoDao;
+    @Autowired
+    DataServiceClient dataServiceClient;
 
     public Boolean setModel(JSONObject jsonObject) {
         JSONArray nodeArray = jsonObject.getJSONArray("nodeDataArray");
@@ -48,8 +51,9 @@ public class ModelService {
         if(!model.tpSort()){
             return false;
         }
-        mongoDao.save(new Graph(name,nodeArray,linkArray));
+
         //return generateSparkPipeline(model);
+        mongoDao.save(new Graph(1,jsonObject));
         return true;
     }
 
@@ -72,6 +76,7 @@ public class ModelService {
         Pipeline pipeline = new Pipeline().setStages(pipelineStages.toArray(new PipelineStage[0]));
         try {
             pipeline.save("data/pipeline/");
+            dataServiceClient.uploadFile();
         }
         catch (Exception e){
             spark.stop();
@@ -81,9 +86,6 @@ public class ModelService {
         spark.stop();
         return true;
     }
-
-
-
 
 
 }

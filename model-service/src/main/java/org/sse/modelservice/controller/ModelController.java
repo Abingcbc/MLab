@@ -30,17 +30,12 @@ public class ModelController {
     }
 
     @RequestMapping(value = "/edit", method = RequestMethod.GET)
-    public Graph view(@RequestParam(name = "name") String name) {
-        return modelService.viewModel(name);
-    }
-
-    @RequestMapping(value = "/download", method = RequestMethod.POST)
-    public ResponseEntity<byte[]> download(@RequestBody JSONPObject jsonpObject) {
-        return null;
+    public Graph view(@RequestParam(name = "Id") String id) {
+        return modelService.viewModel(id);
     }
 
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-    public Boolean delete(@RequestParam(name="name") String name){return modelService.deleteModel(name);}
+    public Boolean delete(@RequestParam(name="id") String id){return modelService.deleteModel(id);}
 
 
 }

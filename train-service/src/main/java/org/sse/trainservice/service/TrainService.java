@@ -22,8 +22,6 @@ public class TrainService {
     @Autowired
     RabbitTemplate rabbitTemplate;
 
-
-
     public Boolean pushIntoMq(Integer id){
         rabbitTemplate.convertAndSend(RabbitConfig.TASK_EXCHANGE_NAME, RabbitConfig.TASK_ROUTING_NAME,id);
         return true;
