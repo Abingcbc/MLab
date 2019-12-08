@@ -2,6 +2,8 @@ package org.sse.dataservice.controller;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.sse.dataservice.model.Chunk;
+import org.sse.dataservice.model.FileInfo;
 import org.sse.dataservice.service.DataService;
 
 import javax.servlet.http.HttpServletResponse;
@@ -19,11 +21,21 @@ public class DataController {
         this.dataService = dataService;
     }
 
-    @GetMapping(value = "/checkFile/{fileId}/{format}")
-    public void checkIsFileExisted(HttpServletResponse response,
-                                   @PathVariable String fileId,
-                                   @PathVariable String format) {
-        int status = dataService.checkIsFileExisted(fileId, format);
+    @GetMapping(value = "/chunk")
+    public void checkIsChunkExisted(@RequestParam(value = "datasetId") Long datasetId,
+                                    @RequestParam(value = "identifier") String identifier,
+                                    HttpServletResponse response) {
+        Boolean status = dataService.checkIsChunkExisted(datasetId, identifier);
+        if (status) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+        }
+    }
+
+    @PostMapping(value = "/chunk")
+    public void uploadFile(Chunk chunk, HttpServletResponse response) {
+        int status = dataService.saveChunk(chunk);
         if (status == 1) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else if (status == 0){
@@ -33,42 +45,24 @@ public class DataController {
         }
     }
 
-    @GetMapping(value = "/checkChunk/{fileId}/{chunkId}")
-    public void checkIsChunkExisted(HttpServletResponse response,
-                                    @PathVariable String fileId,
-                                    @PathVariable int chunkId) {
-        int status = dataService.checkIsChunkExisted(fileId, chunkId);
-        if (status == 1) {
-            response.setStatus(HttpServletResponse.SC_OK);
-        } else if (status == 0){
-            response.setStatus(HttpServletResponse.SC_CONFLICT);
-        } else {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        }
-    }
-
-    @PostMapping(value = "/upload/{fileId}/{chunkId}")
-    public void uploadFile(@RequestParam("file") MultipartFile file,
-                           HttpServletResponse response,
-                           @PathVariable String fileId,
-                           @PathVariable int chunkId) {
-        if (dataService.saveChunk(file, fileId, chunkId)) {
-            response.setStatus(HttpServletResponse.SC_OK);
-        } else {
-            response.setStatus(HttpServletResponse.SC_CONFLICT);
-        }
-    }
-
-    @PostMapping(value = "/merge/{fileId}/{format}/{chunks}")
-    public void mergeFile(HttpServletResponse response,
-                          @PathVariable String fileId,
-                          @PathVariable String format,
-                          @PathVariable int chunks) {
+    @PostMapping(value = "/merge")
+    public void mergeFile(@RequestParam(value = "datasetId") Long datasetId,
+                          HttpServletResponse response) {
         try {
-            if (dataService.merge(fileId, format, chunks)) {
-                response.setStatus(HttpServletResponse.SC_OK);
-            } else {
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            int status = dataService.merge(datasetId);
+            switch (status) {
+                case 1:
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    break;
+                case -1:
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    break;
+                case -2:
+                    response.setStatus(HttpServletResponse.SC_CONFLICT);
+                    break;
+                case -3:
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    break;
             }
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

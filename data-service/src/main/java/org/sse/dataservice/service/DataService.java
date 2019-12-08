@@ -1,20 +1,34 @@
 package org.sse.dataservice.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.sse.dataservice.client.MetadataServiceClient;
+import org.sse.dataservice.model.Chunk;
+import org.sse.dataservice.model.Dataset;
 
 import java.io.*;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author cbc
  */
+@Slf4j
 @Service
 public class DataService {
+
+    @Autowired
+    StringRedisTemplate redisTemplate;
+
+    @Autowired
+    MetadataServiceClient metadataServiceClient;
 
     @Value("${hdfs.folderPath}")
     private String folderPath;
@@ -25,7 +39,7 @@ public class DataService {
         this.configuration = configuration;
     }
 
-    private void closeFileSystemOrSteam(Closeable closeable) {
+    private void closeFileSystemOrStream(Closeable closeable) {
         if (closeable != null) {
             try {
                 closeable.close();
@@ -52,8 +66,8 @@ public class DataService {
         } catch (IOException e) {
             return file;
         } finally {
-            closeFileSystemOrSteam(inputStream);
-            closeFileSystemOrSteam(outputStream);
+            closeFileSystemOrStream(inputStream);
+            closeFileSystemOrStream(outputStream);
         }
     }
 
@@ -62,60 +76,60 @@ public class DataService {
         try {
             fileSystem = FileSystem.get(configuration);
             String filePath = folderPath+"/"+fileId+"."+format;
-            return fileSystem.exists(new Path(filePath)) ? 0 : 1;
+            return fileSystem.exists(new Path(filePath)) ? 1 : 0;
         } catch (IOException e) {
             e.printStackTrace();
             return -1;
         } finally {
-            closeFileSystemOrSteam(fileSystem);
+            closeFileSystemOrStream(fileSystem);
         }
     }
 
-    public int checkIsChunkExisted(String fileId, int chunkId) {
-        FileSystem fileSystem = null;
-        try {
-            fileSystem = FileSystem.get(configuration);
-            String filePath = folderPath+"/tmp/"+chunkId+fileId+".tmp";
-            return fileSystem.exists(new Path(filePath)) ? 0 : 1;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return -1;
-        } finally {
-            closeFileSystemOrSteam(fileSystem);
-        }
+    public Boolean checkIsChunkExisted(Long datasetId, String identifier) {
+        return redisTemplate.opsForSet().isMember(String.valueOf(datasetId), identifier);
     }
 
-    public boolean saveChunk(MultipartFile multipartFile, String fileId, int chunkId) {
+    public int saveChunk(Chunk chunk) {
         FileSystem fileSystem = null;
         try {
-            if (checkIsChunkExisted(fileId, chunkId) == 0) {
+            if (!checkIsChunkExisted(chunk.getDatasetId(), chunk.getIdentifier())) {
                 fileSystem = FileSystem.get(configuration);
-                File file = multiPartFileToFile(multipartFile);
+                File file = multiPartFileToFile(chunk.getFile());
                 Path srcPath = new Path(file.getPath());
-                Path dstPath = new Path(folderPath+"/tmp/"+chunkId+fileId+".tmp");
+                Path dstPath = new Path(folderPath+"/tmp/"+chunk.getChunkNumber()+chunk.getDatasetId()+".tmp");
                 fileSystem.copyFromLocalFile(srcPath, dstPath);
-                return file.delete();
+                redisTemplate.opsForSet().add(String.valueOf(chunk.getDatasetId()), chunk.getIdentifier());
+                redisTemplate.expire(String.valueOf(chunk.getDatasetId()), 60, TimeUnit.MINUTES);
+                return file.delete() ? 1 : -1;
             } else {
-                return false;
+                return 0;
             }
         } catch (IOException exception) {
             exception.printStackTrace();
-            return false;
+            return -1;
         } finally {
-            closeFileSystemOrSteam(fileSystem);
+            closeFileSystemOrStream(fileSystem);
         }
     }
 
-    public boolean merge(String fileId, String format, int chunks) {
+    public int merge(Long datasetId) {
         FileSystem fileSystem = null;
         FSDataOutputStream outputStream = null;
+        Dataset dataset = metadataServiceClient.getDatasetById(datasetId);
         try {
-            if (checkIsFileExisted(fileId, format) == 0) {
+            if (dataset == null) {
+                return -1;
+            }
+            if (checkIsFileExisted(String.valueOf(datasetId), dataset.getFormat()) == 0) {
                 fileSystem = FileSystem.get(configuration);
                 outputStream = fileSystem.create(
-                        new Path(folderPath+"/"+fileId+"."+format), true);
-                for (int i = 0; i < chunks; i++) {
-                    Path tempPath = new Path(folderPath+"/tmp/"+chunks+fileId+".tmp");
+                        new Path(folderPath+"/"+String.valueOf(datasetId)+"."+dataset.getFormat()), true);
+                Long totalNum = redisTemplate.opsForSet().size(String.valueOf(datasetId));
+                if (totalNum == null) {
+                    return -1;
+                }
+                for (int i = 0; i < totalNum; i++) {
+                    Path tempPath = new Path(folderPath+"/tmp/"+ i + datasetId +".tmp");
                     FSDataInputStream inputStream = fileSystem.open(tempPath);
                     // Here we can't directly use `copyBytes` to close stream
                     // because we still need outputStream to be open
@@ -124,16 +138,17 @@ public class DataService {
                     // The second parameter means recursively deleting
                     fileSystem.delete(tempPath, true);
                 }
-                return true;
+                metadataServiceClient.enableDataset(datasetId);
+                return 1;
             } else {
-                return false;
+                return -2;
             }
         } catch (Exception exception) {
             exception.printStackTrace();
-            return false;
+            return -3;
         } finally {
             IOUtils.closeStream(outputStream);
-            closeFileSystemOrSteam(fileSystem);
+            closeFileSystemOrStream(fileSystem);
         }
     }
 
@@ -153,7 +168,7 @@ public class DataService {
             e.printStackTrace();
             return -1;
         } finally {
-            closeFileSystemOrSteam(fileSystem);
+            closeFileSystemOrStream(fileSystem);
         }
     }
 }
