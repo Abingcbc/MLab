@@ -61,8 +61,7 @@ public interface CommentMapper {
             "    comment\n" +
             "WHERE\n" +
             "    post_id = 4 AND `status` = 0\n" +
-            "ORDER BY comment_id DESC\n" +
-            "LIMIT #{start} , #{commentNum}")
+            "ORDER BY comment_id DESC\n" )
     @Results(value ={
             @Result(property = "commentId",column = "comment_id"),
             @Result(property = "postId",column = "post_id"),
@@ -71,9 +70,7 @@ public interface CommentMapper {
             @Result(property = "likeNum",column = "like_num")
         }
     )
-    List<Comment> getCommentsByPostId(@Param("postId") long postId,
-                                      @Param("start") int start,
-                                      @Param("commentNum") int commentNum);
+    List<Comment> getCommentsByPostId(@Param("postId") long postId);
 
 
     /**

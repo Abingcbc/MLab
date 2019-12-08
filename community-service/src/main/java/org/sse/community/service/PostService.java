@@ -1,5 +1,7 @@
 package org.sse.community.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -82,21 +84,21 @@ public class PostService {
         }
     }
 
-    public List<Post> getPostsOrderByTime(int postNum,int pageNum,String str){
-        int start = postNum*pageNum-postNum;
-        int num=postNum;
-        String string = "%"+str+"%";
-        return postMapper.selectPostOrderByTime(start,num,string);
+    public PageInfo<Post> searchPostsOrderByTime(int pageNum, int pageSize, String keyword){
+        keyword = "%"+keyword+"%";
+        PageHelper.startPage(pageNum,pageSize);
+        List<Post> list=postMapper.searchPostsOrderByTime(keyword);
+        return new PageInfo<>(list);
     }
 
     public int getNumOfPost() {
         return postMapper.selectCount();
     }
 
-    public List<Post> getPostsOrderByLikeNum(int postNum,int pageNum,String str){
-        int start = postNum*pageNum-postNum;
-        int num=postNum;
-        String string = "%"+str+"%";
-        return postMapper.selectPostOrderByLikeNum(start,num,string);
+    public PageInfo<Post> searchPostsOrderByLikeNum(int pageNum,int pageSize,String keyword){
+        keyword = "%"+keyword+"%";
+        PageHelper.startPage(pageNum,pageSize);
+        List<Post> list = postMapper.searchPostsOrderByLikeNum(keyword);
+        return new PageInfo<>(list);
     }
 }

@@ -1,5 +1,8 @@
 package org.sse.community.service;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sse.community.mapper.CommentMapper;
@@ -46,8 +49,13 @@ public class ReplyService {
         }
     }
 
-    public List<Reply> getRepliesByCommentId(long commentId,int start,int replyNum) {
-        return replyMapper.getRepliesByCommentId(commentId,start,replyNum);
+    public PageInfo<Reply> getRepliesByCommentId(long commentId,int pageNum,int pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<Reply> list = replyMapper.getRepliesByCommentId(commentId);
+        System.out.println(list.toString());
+        PageInfo<Reply> pageInfo = new PageInfo<>(list);
+        System.out.println(pageInfo.getList().toString());
+        return pageInfo;
     }
 
     public boolean deleteReply(long id) {

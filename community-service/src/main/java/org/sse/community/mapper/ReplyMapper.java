@@ -54,8 +54,6 @@ public interface ReplyMapper {
     /**
      * get list of replies by comment id
      * @param commentId comment id
-     * @param start start
-     * @param replyNum reply num
      * @return list of replies
      */
     @Select("SELECT \n" +
@@ -64,16 +62,13 @@ public interface ReplyMapper {
             "    reply\n" +
             "WHERE\n" +
             "    comment_id = #{commentId} AND `status` = 0\n" +
-            "ORDER BY reply_id DESC\n" +
-            "LIMIT #{start} , #{replyNum}")
+            "ORDER BY reply_id DESC\n" )
     @Results(value = {
             @Result(property = "replyId",column = "reply_id"),
             @Result(property = "commentId",column = "comment_id"),
             @Result(property = "createTime",column = "create_time")
     })
-    List<Reply> getRepliesByCommentId(@Param("commentId") long commentId,
-                                      @Param("start") int start,
-                                      @Param("replyNum") int replyNum);
+    List<Reply> getRepliesByCommentId(@Param("commentId") long commentId);
 
 
 

@@ -1,5 +1,7 @@
 package org.sse.community.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -54,10 +56,10 @@ public class CommentService {
         }
     }
 
-    public List<Comment> getCommentsByPostId(long postId,int pageNum,int commentNum) {
-        int start=pageNum*commentNum-commentNum;
-
-        return commentMapper.getCommentsByPostId(postId,start,commentNum);
+    public PageInfo<Comment> getCommentsByPostId(long postId, int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum,pageSize);
+        List<Comment> list = commentMapper.getCommentsByPostId(postId);
+        return new PageInfo<>(list);
     }
 
     @Transactional(rollbackFor = Exception.class)

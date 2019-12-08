@@ -1,5 +1,6 @@
 package org.sse.community.controller;
 
+import com.github.pagehelper.PageInfo;
 import javafx.geometry.Pos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -54,27 +55,29 @@ public class PostController {
     }
 
     @GetMapping("/get-order-by-time")
-    public List<Post> getPageOfPostsByTime(@RequestParam("page") int pageNum,@RequestParam("post") int postNum){
-        return postService.getPostsOrderByTime(postNum,pageNum,"");
+    public PageInfo<Post> getPageOfPostsByTime(@RequestParam("page-num") int pageNum,
+                                               @RequestParam("page-size") int pageSize){
+        return postService.searchPostsOrderByTime(pageNum,pageSize,"");
     }
 
     @PostMapping("/search-order-by-time")
-    public List<Post> searchPostsOrderByTime(@RequestParam("page") int pageNum,
-                                             @RequestParam("post") int postNum,
-                                             @RequestBody String string) {
-        return postService.getPostsOrderByTime(postNum,pageNum,string);
+    public PageInfo<Post> searchPostsOrderByTime(@RequestParam("page-num") int pageNum,
+                                             @RequestParam("page-size") int pageSize,
+                                             @RequestBody String keyword) {
+        return postService.searchPostsOrderByTime(pageNum,pageSize,keyword);
     }
 
 
     @GetMapping("/get-order-by-like")
-    public List<Post> getPageOfPostsByLike(@RequestParam("page") int pageNum,@RequestParam("post") int postNum){
-        return postService.getPostsOrderByLikeNum(postNum,pageNum,"");
+    public PageInfo<Post> getPageOfPostsByLike(@RequestParam("page-num") int pageNum,
+                                               @RequestParam("page-size") int pageSize){
+        return postService.searchPostsOrderByLikeNum(pageNum,pageSize,"");
     }
     @PostMapping("/search-order-by-like")
-    public List<Post> searchPostsOrderByLike(@RequestParam("page") int pageNum,
-                                             @RequestParam("post") int postNum,
-                                             @RequestBody String string) {
-        return postService.getPostsOrderByLikeNum(postNum,pageNum,string);
+    public PageInfo<Post> searchPostsOrderByLike(@RequestParam("page-num") int pageNum,
+                                             @RequestParam("page-size") int pageSize,
+                                             @RequestBody String keyword) {
+        return postService.searchPostsOrderByTime(pageNum,pageSize,keyword);
     }
 
     @GetMapping("/num")

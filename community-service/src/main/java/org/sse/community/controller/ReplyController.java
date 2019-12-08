@@ -1,5 +1,7 @@
 package org.sse.community.controller;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.sse.community.model.Reply;
@@ -27,11 +29,10 @@ public class ReplyController {
     }
 
     @GetMapping("/get-replies-of-comment/{commentId}")
-    public List<Reply> getRepliesOfComment(@PathVariable long commentId,
-                                           @RequestParam("page") int page,
-                                           @RequestParam("reply") int reply) {
-        int start = page*reply-reply;
-        return replyService.getRepliesByCommentId(commentId,start,reply);
+    public PageInfo<Reply> getRepliesOfComment(@PathVariable long commentId,
+                                        @RequestParam("page-num") int pageNum,
+                                        @RequestParam("page-size") int pageSize) {
+        return replyService.getRepliesByCommentId(commentId,pageNum,pageSize);
     }
 
     @GetMapping("/delete/{id}")

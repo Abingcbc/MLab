@@ -123,31 +123,28 @@ public interface PostMapper {
     int selectCount();
 
     /**
-     * select posts order by time(id)
-     * @param start the pos of start, which is page number * the number of posts in one page
-     * @param number the number of posts in one page
-     * @return List of posts
+     * select posts order by time
+     * @param keyword keyword
+     * @return
      */
     @Select("SELECT \n" +
             "    *\n" +
             "FROM\n" +
             "    post\n" +
             "WHERE\n" +
-            "    `status` = 0 AND title like #{string}\n" +
-            "ORDER BY post_id DESC\n" +
-            "LIMIT #{start} , #{number}")
+            "    `status` = 0 AND title like #{keyword}\n" +
+            "ORDER BY post_id DESC\n")
     @Results(value = {
             @Result(property = "postId",column = "post_id"),
             @Result(property = "createTime",column = "create_time"),
             @Result(property = "likeNum",column = "like_num"),
             @Result(property = "commentNum",column = "comment_num")
     })
-    List<Post> selectPostOrderByTime(@Param("start") int start,@Param("number") int number,@Param("string") String string);
+    List<Post> searchPostsOrderByTime(@Param("keyword") String keyword);
 
     /**
-     * get list of posts order by like_num
-     * @param start start pos
-     * @param number the number of one page
+     * search posts order by like num
+     * @param keyword keyword
      * @return list of posts
      */
     @Select("SELECT \n" +
@@ -155,14 +152,13 @@ public interface PostMapper {
             "FROM\n" +
             "    mlab.post\n" +
             "WHERE\n" +
-            "     status = 0 AND title like #{string}\n" +
-            "ORDER BY like_num DESC\n"+
-            "LIMIT #{start} , #{number};")
+            "     status = 0 AND title like #{keyword}\n" +
+            "ORDER BY like_num DESC\n")
     @Results(value = {
             @Result(property = "postId",column = "post_id"),
             @Result(property = "createTime",column = "create_time"),
             @Result(property = "likeNum",column = "like_num"),
             @Result(property = "commentNum",column = "comment_num")
     })
-    List<Post> selectPostOrderByLikeNum(@Param("start") int start,@Param("number")int number,@Param("string") String string);
+    List<Post> searchPostsOrderByLikeNum(@Param("keyword") String keyword);
 }
