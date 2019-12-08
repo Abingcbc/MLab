@@ -1,6 +1,7 @@
 package org.sse.dataservice.controller;
 
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.sse.dataservice.model.Chunk;
 import org.sse.dataservice.model.FileInfo;
 import org.sse.dataservice.service.DataService;
@@ -20,47 +21,48 @@ public class DataController {
         this.dataService = dataService;
     }
 
-    @GetMapping(value = "/checkFile/{fileId}/{format}")
-    public void checkIsFileExisted(HttpServletResponse response,
-                                   @PathVariable String fileId,
-                                   @PathVariable String format) {
-        int status = dataService.checkIsFileExisted(fileId, format);
-        if (status == 0) {
+    @GetMapping(value = "/chunk")
+    public void checkIsChunkExisted(@RequestParam(value = "datasetId") Long datasetId,
+                                    @RequestParam(value = "identifier") String identifier,
+                                    HttpServletResponse response) {
+        Boolean status = dataService.checkIsChunkExisted(datasetId, identifier);
+        if (status) {
             response.setStatus(HttpServletResponse.SC_OK);
-        } else if (status == 1){
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+        }
+    }
+
+    @PostMapping(value = "/chunk")
+    public void uploadFile(Chunk chunk, HttpServletResponse response) {
+        int status = dataService.saveChunk(chunk);
+        if (status == 1) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else if (status == 0){
             response.setStatus(HttpServletResponse.SC_CONFLICT);
         } else {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
-    @GetMapping(value = "/chunk")
-    public void checkIsChunkExisted(HttpServletResponse response, Chunk chunk) {
-        Boolean status = dataService.checkIsChunkExisted(chunk);
-        if (status) {
-            response.setStatus(HttpServletResponse.SC_CONFLICT);
-        } else {
-            response.setStatus(HttpServletResponse.SC_OK);
-        }
-    }
-
-    @PostMapping(value = "/chunk")
-    public void uploadFile(Chunk chunk,
-                           HttpServletResponse response) {
-        if (dataService.saveChunk(chunk)) {
-            response.setStatus(HttpServletResponse.SC_OK);
-        } else {
-            response.setStatus(HttpServletResponse.SC_CONFLICT);
-        }
-    }
-
     @PostMapping(value = "/merge")
-    public void mergeFile(FileInfo fileInfo, HttpServletResponse response) {
+    public void mergeFile(@RequestParam(value = "datasetId") Long datasetId,
+                          HttpServletResponse response) {
         try {
-            if (dataService.merge(fileInfo)) {
-                response.setStatus(HttpServletResponse.SC_OK);
-            } else {
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            int status = dataService.merge(datasetId);
+            switch (status) {
+                case 1:
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    break;
+                case -1:
+                    response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+                    break;
+                case -2:
+                    response.setStatus(HttpServletResponse.SC_CONFLICT);
+                    break;
+                case -3:
+                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                    break;
             }
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

@@ -38,7 +38,7 @@ public interface HistoryMapper {
             "pipeline_id, model_id, start_time, status)\n" +
             "values (#{runType}, #{username}, #{pipelineId}," +
             "#{modelId}, NOW(), 1);")
-    @Options(useGeneratedKeys = true, keyProperty = "history_id")
+    @Options(useGeneratedKeys = true, keyProperty = "historyId")
     int createNewHistory(History history);
 
     /**

@@ -30,7 +30,7 @@ public interface PipelineMapper {
             "description, create_time, status) \n" +
             "values (#{username}, #{pipelineName}, #{description}," +
             "NOW(), 1);")
-    @Options(useGeneratedKeys = true, keyProperty = "pipeline_id")
+    @Options(useGeneratedKeys = true, keyProperty = "pipelineId")
     int createNewPipeline(Pipeline pipeline);
 
     /**

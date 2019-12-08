@@ -28,7 +28,7 @@ public interface NodeMapper {
      */
     @Insert("insert into node(username, name, create_time, status)\n" +
             "values (#{username}, #{name}, NOW(), 1);")
-    @Options(useGeneratedKeys = true, keyProperty = "node_id")
+    @Options(useGeneratedKeys = true, keyProperty = "nodeId")
     int createNewNode(Node node);
 
     /**

@@ -39,18 +39,17 @@ public interface MetadataServiceClient {
                           @PathVariable String fileId);
 
     /**
-     * create new dataset
-     * @param dataset object of dataset
-     * @return 200 or 500
+     * get dataset by id
+     * @param datasetId dataset id
+     * @return object of dataset
      */
-    @PreAuthorize(value = "#oauth2.hasScope('server')")
-    @PostMapping(value = "/dataset")
-    ResponseEntity<Result> createNewDataset(@RequestBody Dataset dataset);
+    @GetMapping(value = "/datasetId/{datasetId}")
+    Dataset getDatasetById(@PathVariable Long datasetId);
 
     /**
-     * delete dataset
-     * @param datasetId
+     * enable dataset
+     * @param datasetId dataset id
      */
-    @PostMapping(value = "/dataset_delete")
-    void deleteDataset(@RequestBody Long datasetId);
+    @PostMapping(value = "/dataset_enable")
+    void enableDataset(@RequestBody Long datasetId);
 }

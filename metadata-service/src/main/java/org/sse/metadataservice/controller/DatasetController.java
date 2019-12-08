@@ -1,4 +1,4 @@
-package org.sse.datasetservice.controller;
+package org.sse.metadataservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,7 +58,12 @@ public class DatasetController {
 
     @PostMapping(value = "/dataset_delete")
     public void deleteDataset(@RequestBody Long datasetId) {
-        datasetService.deleteDataset(datasetId);
+        datasetService.updateDatasetStatus(datasetId, 0);
+    }
+
+    @PostMapping(value = "/dataset_enable")
+    public void enableDataset(@RequestBody Long datasetId) {
+        datasetService.updateDatasetStatus(datasetId, 1);
     }
 
 }

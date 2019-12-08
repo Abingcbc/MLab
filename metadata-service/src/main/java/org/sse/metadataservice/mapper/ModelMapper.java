@@ -29,7 +29,8 @@ public interface ModelMapper {
     @Insert("insert into model(username, model_name, description, " +
             "create_time, status)\n" +
             "values (#{username}, #{modelName}, #{description}," +
-            "NOW(), 1)")
+            "NOW(), 1);")
+    @Options(useGeneratedKeys = true, keyProperty = "modelId")
     int createNewModel(Model model);
 
     /**

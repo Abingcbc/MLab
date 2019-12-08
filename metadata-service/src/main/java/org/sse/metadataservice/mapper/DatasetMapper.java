@@ -27,9 +27,9 @@ public interface DatasetMapper {
      * @return number of added row
      */
     @Insert(value = "insert into dataset(username, dataset_name, description, format, size, create_time, is_public, status)\n" +
-            "values (#{username}, #{dataset_name}, #{description}, " +
-            "#{format}, #{size}, NOW(), #{is_public}), 1")
-    @Options(useGeneratedKeys = true, keyProperty = "dataset_id")
+            "values (#{username}, #{datasetName}, #{description}, " +
+            "#{format}, #{size}, NOW(), #{isPublic}, 0);")
+    @Options(useGeneratedKeys = true, keyProperty = "datasetId")
     int createNewDataset(Dataset dataset);
 
     /**
@@ -43,9 +43,11 @@ public interface DatasetMapper {
     /**
      * delete dataset by dataset id, only set status to 0
      * @param datasetId dataset id
+     * @param status status
      */
     @Update(value = "update dataset\n" +
-            "set status = 0\n" +
+            "set status = #{status}\n" +
             "where dataset_id = #{datasetId}\n")
-    void deleteDatasetById(@Param(value = "datasetId") Long datasetId);
+    void updateDatasetStatusById(@Param(value = "datasetId") Long datasetId,
+                                 @Param(value = "status") Integer status);
 }

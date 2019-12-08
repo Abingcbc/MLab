@@ -32,8 +32,8 @@ public class DatasetService {
         return datasetMapper.getDatasetById(datasetId);
     }
 
-    public void deleteDataset(Long datasetId) {
-        datasetMapper.deleteDatasetById(datasetId);
+    public void updateDatasetStatus(Long datasetId, Integer status) {
+        datasetMapper.updateDatasetStatusById(datasetId, status);
     }
 
     public int getDatasetPermission(String username, Long datasetId) {
