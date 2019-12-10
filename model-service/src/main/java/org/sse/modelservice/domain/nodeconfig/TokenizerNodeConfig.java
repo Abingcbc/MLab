@@ -20,6 +20,7 @@ public class TokenizerNodeConfig extends NodeConfig {
         super();
         this.inputCol = inputCol;
         this.outputCol = outputCol;
+        this.setType("Tokenzier");
     }
 
     @Override

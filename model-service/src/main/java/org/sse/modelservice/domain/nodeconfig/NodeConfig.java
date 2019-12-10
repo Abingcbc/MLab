@@ -1,5 +1,6 @@
 package org.sse.modelservice.domain.nodeconfig;
 
+import lombok.Data;
 import org.apache.spark.ml.PipelineStage;
 
 /**
@@ -10,12 +11,9 @@ import org.apache.spark.ml.PipelineStage;
  * @description: configuration for node
  * @data: 2019-11-23 7:32
  **/
+@Data
 public abstract class NodeConfig {
     private String type;
-
-    public String getType() {
-        return type;
-    }
 
     abstract public PipelineStage getPipelineStage();
 }

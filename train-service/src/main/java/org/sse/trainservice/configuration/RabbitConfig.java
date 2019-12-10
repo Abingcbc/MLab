@@ -6,6 +6,7 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.sse.trainservice.domain.PredictReceiver;
 import org.sse.trainservice.domain.ResultReceiver;
 import org.sse.trainservice.domain.TaskReceiver;
 
@@ -28,9 +29,12 @@ public class RabbitConfig {
     public static final String RESULT_EXCHANGE_NAME="ResultExchange";
     public static final String RESULT_ROUTING_NAME="ResultRouting";
 
+    public static final String PREDICT_QUEUE_NAME="PredictQueue";
+    public static final String PREDICT_EXCHANGE_NAME="PredictExchange";
+    public static final String PREDICT_ROUTING_NAME="PredictRouting";
     @Bean
     public Queue taskQueue() {
-        return new Queue(TASK_QUEUE_NAME,true);  //true 是否持久
+        return new Queue(TASK_QUEUE_NAME,true);
     }
 
 
@@ -47,7 +51,7 @@ public class RabbitConfig {
 
     @Bean
     public Queue resultQueue() {
-        return new Queue(RESULT_QUEUE_NAME,true);  //true 是否持久
+        return new Queue(RESULT_QUEUE_NAME,true);
     }
 
 
@@ -57,7 +61,18 @@ public class RabbitConfig {
     }
 
     @Bean
-    Binding bindingresult() { return BindingBuilder.bind(resultQueue()).to(resultExchange()).with(RESULT_ROUTING_NAME);}
+    Binding bindingResult() { return BindingBuilder.bind(resultQueue()).to(resultExchange()).with(RESULT_ROUTING_NAME);}
+
+    @Bean
+    public Queue predictQueue(){return new Queue(PREDICT_QUEUE_NAME,true);}
+
+    @Bean
+    DirectExchange predictExchange() {
+        return new DirectExchange(PREDICT_EXCHANGE_NAME);
+    }
+
+    @Bean
+    Binding bindingPredict() { return BindingBuilder.bind(predictQueue()).to(predictExchange()).with(PREDICT_ROUTING_NAME); }
 
     @Bean
     public TaskReceiver taskReceiver1(){return new TaskReceiver("1");}
@@ -67,6 +82,15 @@ public class RabbitConfig {
 
     @Bean
     public TaskReceiver taskReceiver3(){return new TaskReceiver("3");}
+
+    @Bean
+    public PredictReceiver predictReceiver1(){return new PredictReceiver("1");}
+
+    @Bean
+    public PredictReceiver predictReceiver2(){return new PredictReceiver("2");}
+
+    @Bean
+    public PredictReceiver predictReceiver3(){return new PredictReceiver("3");}
 
     @Bean
     public ResultReceiver resultReceiver(){return new ResultReceiver();}

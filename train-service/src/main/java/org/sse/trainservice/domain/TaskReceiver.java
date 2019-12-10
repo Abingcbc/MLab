@@ -1,5 +1,11 @@
 package org.sse.trainservice.domain;
 
+import org.apache.spark.ml.Model;
+import org.apache.spark.ml.Pipeline;
+import org.apache.spark.ml.PipelineModel;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
+import org.apache.spark.sql.SparkSession;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -8,6 +14,7 @@ import org.sse.trainservice.configuration.RabbitConfig;
 import org.sse.trainservice.service.MailService;
 import org.sse.trainservice.websocket.WebSocketSever;
 
+import javax.xml.crypto.Data;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -33,15 +40,24 @@ public class TaskReceiver {
     }
 
     @RabbitHandler
-    public void train(Integer id) throws Exception {
-        System.out.println("监听器"+this.instanceName+"号已接收消息"+id.toString());
-        Thread.sleep(5000);
-        System.out.println("监听器"+this.instanceName+"号已完成消息"+id.toString());
-        Map<String,String> map=new HashMap<String, String>();
-        map.put("to","caiyiyang1998@126.com");
-        map.put("subject","已完成任务训练："+id.toString());
-        map.put("content","已完成任务训练："+id.toString());
-        rabbitTemplate.convertAndSend(RabbitConfig.RESULT_EXCHANGE_NAME, RabbitConfig.RESULT_ROUTING_NAME,map);
+    public void train(Map<String,String> map){
+
+        try {
+            SparkSession spark=SparkSession.builder().appName(map.get("pipelineId")).master("local").getOrCreate();
+            Dataset<Row> dataset=spark.read().option("inferSchema", true).option("header", true).csv("dataset/"+map.get("fileId")+".csv");
+            Pipeline pipeline= Pipeline.load("pipeline/"+map.get("userId")+"/"+map.get("pipelineId"));
+            PipelineModel model=pipeline.fit(dataset);
+            model.write().overwrite().save("model/"+map.get("userId")+"/"+map.get("pipelineId"));
+            spark.stop();
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        Map<String,String> rmap=new HashMap<String, String>();
+        rmap.put("to","caiyiyang1998@126.com");
+        rmap.put("subject","已完成任务训练："+map.get("pipelineId"));
+        rmap.put("content","已完成任务训练："+map.get("pipelineId"));
+        rabbitTemplate.convertAndSend(RabbitConfig.RESULT_EXCHANGE_NAME, RabbitConfig.RESULT_ROUTING_NAME,rmap);
     }
 
 

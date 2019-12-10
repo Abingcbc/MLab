@@ -1,5 +1,6 @@
 package org.sse.modelservice.client;
 
+/**
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,3 +19,4 @@ public interface DataServiceClient {
                     @PathVariable String fileId,
                     @PathVariable int chunkId);
 }
+**/

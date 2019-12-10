@@ -13,10 +13,17 @@ import org.apache.spark.ml.classification.LogisticRegression;
  **/
 public class LogisticRegressionNodeConfig extends NodeConfig {
 
+    private int aggregationDepth;
+    private double elasticNetParam;
+    private double tol;
+    private int maxIter;
+    private double param;
+
     public LogisticRegressionNodeConfig(int maxIter, double param) {
         super();
         this.maxIter = maxIter;
         this.param = param;
+        this.setType("Logistic");
     }
 
     @Override
@@ -24,9 +31,6 @@ public class LogisticRegressionNodeConfig extends NodeConfig {
         return new LogisticRegression().setMaxIter(maxIter).setRegParam(param);
     }
 
-    private int aggregationDepth;
-    private double elasticNetParam;
-    private double tol;
-    private int maxIter;
-    private double param;
+
 }
+

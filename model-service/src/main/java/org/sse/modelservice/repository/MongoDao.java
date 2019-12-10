@@ -1,6 +1,5 @@
 package org.sse.modelservice.repository;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.sse.modelservice.domain.model.Graph;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -14,6 +13,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @data: 2019/12/2 下午8:42
  **/
 @Repository
-public interface MongoDao extends MongoRepository<Graph, String> {
-    public Graph findByName(String name);
+public interface MongoDao extends MongoRepository<Graph, Integer> {
+    Graph findByGraphId(String graphId);
 }

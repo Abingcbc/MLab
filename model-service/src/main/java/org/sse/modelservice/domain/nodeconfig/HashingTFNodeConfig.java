@@ -17,14 +17,16 @@ public class HashingTFNodeConfig extends NodeConfig {
     private Boolean binary;
     private Integer numFeatures;
 
-    public HashingTFNodeConfig(String inputCol, String outputCol) {
+    public HashingTFNodeConfig(String inputCol, String outputCol,int numFeatures) {
         super();
         this.inputCol = inputCol;
         this.outputCol = outputCol;
+        this.numFeatures=numFeatures;
+        this.setType("HashingTF");
     }
 
     @Override
     public PipelineStage getPipelineStage() {
-        return new HashingTF().setInputCol(inputCol).setOutputCol(outputCol);
+        return new HashingTF().setInputCol(inputCol).setOutputCol(outputCol).setNumFeatures(numFeatures);
     }
 }

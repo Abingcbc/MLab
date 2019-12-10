@@ -4,8 +4,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.scheduling.annotation.EnableAsync;
+
+/**import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
+import org.springframework.cloud.client.SpringCloudApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
+ **/
 
 /**
  * @title: LabApplication
@@ -16,8 +20,11 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * @version: V1.0
  */
 
-@SpringCloudApplication
+//@SpringCloudApplication
+@SpringBootApplication
 @EnableAsync
+//@EnableOAuth2Client
+//@EnableFeignClients
 @EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 public class ModelServiceApplication {
     public static void main(String[] args) {

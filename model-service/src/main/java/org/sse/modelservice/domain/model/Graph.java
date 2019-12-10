@@ -2,14 +2,11 @@ package org.sse.modelservice.domain.model;
 
 
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import jdk.nashorn.internal.objects.annotations.Getter;
-import jdk.nashorn.internal.objects.annotations.Setter;
+import com.google.gson.JsonObject;
 import lombok.Data;
-import org.bson.BsonArray;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+
 
 /**
  * @version: 1.0
@@ -21,10 +18,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
  **/
 @Data
 public class Graph {
-    private int id;
+    @Id
+    private String graphId;
+    private String inputFile;
     private JSONObject model;
-    public Graph(int id, JSONObject object){
-        this.id=id;
-        this.model=object;
+    public Graph(String graphId,String inputFile, JSONObject model){
+        this.graphId=graphId;
+        this.inputFile=inputFile;
+        this.model=model;
     }
 }

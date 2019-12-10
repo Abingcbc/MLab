@@ -1,10 +1,7 @@
 package org.sse.modelservice.domain.model;
 
 import com.alibaba.fastjson.JSONObject;
-import org.sse.modelservice.domain.nodeconfig.NodeConfig;
-import org.sse.modelservice.domain.nodeconfig.HashingTFNodeConfig;
-import org.sse.modelservice.domain.nodeconfig.LogisticRegressionNodeConfig;
-import org.sse.modelservice.domain.nodeconfig.TokenizerNodeConfig;
+import org.sse.modelservice.domain.nodeconfig.*;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -45,12 +42,16 @@ public class Node {
 
     public void setConfig(JSONObject jsonObject) {
         String name = jsonObject.getString("name");
-        if (name == "Tokenizar") {
+        System.out.println(name);
+        if (name.equals("Tokenizer")) {
+            System.out.println("OK!!!!!!!!!!!!!!!!!");
             config = new TokenizerNodeConfig(jsonObject.getString("inputCol"), jsonObject.getString("outputCol"));
-        } else if (name == "HashingTF") {
-            config = new HashingTFNodeConfig(jsonObject.getString("inputCol"), jsonObject.getString("outputCol"));
-        } else if (name == "LogisticRegression") {
+        } else if (name.equals("HashingTF")) {
+            config = new HashingTFNodeConfig(jsonObject.getString("inputCol"), jsonObject.getString("outputCol"),jsonObject.getInteger("numFeatures"));
+        } else if (name.equals("LogisticRegression")) {
             config = new LogisticRegressionNodeConfig(jsonObject.getInteger("maxIter"), jsonObject.getDouble("regParam"));
+        }else if(name.equals("Input")){
+            config=new InputNodeConfig(jsonObject.getString("fileName"));
         }
     }
 

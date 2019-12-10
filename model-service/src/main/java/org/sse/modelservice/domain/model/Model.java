@@ -15,16 +15,12 @@ import java.util.*;
 
 @Data
 public class Model {
-    private int id;
-    private String username;
-    private String description;
-    private Date create_time;
+    private PipelineInformation pipelineInformation;
     private List<Node> nodeList;
     private List<Link> linkList;
-    private String name;
 
-    public Model(String name) {
-        this.name = name;
+    public Model(PipelineInformation pipelineInformation) {
+        this.pipelineInformation = pipelineInformation;
         nodeList = new ArrayList<Node>();
         linkList = new ArrayList<Link>();
     }

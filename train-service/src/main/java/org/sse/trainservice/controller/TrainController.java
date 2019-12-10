@@ -3,10 +3,7 @@ package org.sse.trainservice.controller;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.sse.trainservice.service.MailService;
 import org.sse.trainservice.service.TrainService;
 
@@ -34,18 +31,11 @@ public class TrainController {
     @Autowired
     MailService mailService;
 
-    @RequestMapping(value = "/train", method = RequestMethod.GET)
-    public boolean train(@RequestParam(name = "id") int id){
-        return trainService.pushIntoMq(id);
-    }
+    @RequestMapping(value = "/train/{userId}/{pipelineId}/{fileId}", method = RequestMethod.GET)
+    public boolean train(@PathVariable String userId, @PathVariable String pipelineId,@PathVariable String fileId){ return trainService.pushIntoTrainMq(userId,pipelineId,fileId); }
 
-    @RequestMapping(value = "/predict", method = RequestMethod.GET)
-    public Boolean predict(@RequestParam(name = "id") int id){return false;}
+    @RequestMapping(value = "/predict/{userId}/{pipelineId}/{fileId}", method = RequestMethod.GET)
+    public boolean predict(@PathVariable String userId, @PathVariable String pipelineId, @PathVariable String fileId){return trainService.pushIntoPredictMq(userId, pipelineId, fileId);}
 
-    @RequestMapping(value = "/test", method = RequestMethod.GET)
-    public boolean test(){
-        mailService.sendSimpleMail("caiyiyang1998@126.com","aaaaaaa","aaaaaaaaaa");
-        return true;
-    }
 
 }
