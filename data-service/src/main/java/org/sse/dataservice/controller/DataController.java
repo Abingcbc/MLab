@@ -63,6 +63,7 @@ public class DataController {
                 case -3:
                     response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                     break;
+                default:
             }
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
