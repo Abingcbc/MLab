@@ -19,7 +19,7 @@ public class UserController {
     public void createNewUser(@RequestBody User user,
                               HttpServletResponse response) {
         int status = userService.register(user.getUsername(),
-                user.getPassword(), user.getEmail());
+                user.getPassword(), user.getEmail(), user.getAvatarUrl());
         if (status == -1) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } else if (status == 0){
@@ -39,7 +39,8 @@ public class UserController {
         int status = userService.updateInfo(jsonObject.getString("username"),
                 jsonObject.getString("oPassword"),
                 jsonObject.getString("password"),
-                jsonObject.getString("email"));
+                jsonObject.getString("email"),
+                jsonObject.getString("avatarUrl"));
         Result result = new Result();
         switch (status) {
             case 1:
@@ -49,13 +50,16 @@ public class UserController {
                 result.setMsg("No such user");
                 break;
             case -2:
-                result.setMsg("Update email failed");
+                result.setMsg("Update password failed");
                 break;
             case -3:
-                result.setMsg("Update password or email failed");
+                result.setMsg("Origin password wrong");
                 break;
             case -4:
-                result.setMsg("origin password wrong");
+                result.setMsg("Update email failed");
+                break;
+            case -5:
+                result.setMsg("Update avatar failed");
                 break;
             default:
                 result.setMsg("Unknown error");
