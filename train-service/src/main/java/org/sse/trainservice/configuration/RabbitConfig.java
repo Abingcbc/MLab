@@ -6,9 +6,9 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.sse.trainservice.domain.PredictReceiver;
-import org.sse.trainservice.domain.ResultReceiver;
-import org.sse.trainservice.domain.TaskReceiver;
+import org.sse.trainservice.service.PredictReceiver;
+import org.sse.trainservice.service.ResultReceiver;
+import org.sse.trainservice.service.TaskReceiver;
 
 /**
  * @version: 1.0

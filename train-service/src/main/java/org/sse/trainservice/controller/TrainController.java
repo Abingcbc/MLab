@@ -32,10 +32,10 @@ public class TrainController {
     MailService mailService;
 
     @RequestMapping(value = "/train/{userId}/{pipelineId}/{fileId}", method = RequestMethod.GET)
-    public boolean train(@PathVariable String userId, @PathVariable String pipelineId,@PathVariable String fileId){ return trainService.pushIntoTrainMq(userId,pipelineId,fileId); }
+    public boolean train(@PathVariable String userId, @PathVariable long pipelineId,@PathVariable String fileId){ return trainService.pushIntoTrainMq(userId,pipelineId,fileId); }
 
-    @RequestMapping(value = "/predict/{userId}/{pipelineId}/{fileId}", method = RequestMethod.GET)
-    public boolean predict(@PathVariable String userId, @PathVariable String pipelineId, @PathVariable String fileId){return trainService.pushIntoPredictMq(userId, pipelineId, fileId);}
+    @RequestMapping(value = "/predict/{userId}/{modelId}/{fileId}", method = RequestMethod.GET)
+    public boolean predict(@PathVariable String userId, @PathVariable long modelId, @PathVariable String fileId){return trainService.pushIntoPredictMq(userId, modelId, fileId);}
 
 
 }

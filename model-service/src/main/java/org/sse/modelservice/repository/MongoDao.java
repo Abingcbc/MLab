@@ -13,6 +13,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @data: 2019/12/2 下午8:42
  **/
 @Repository
-public interface MongoDao extends MongoRepository<Graph, Integer> {
+public interface MongoDao extends MongoRepository<Graph, String> {
     Graph findByGraphId(String graphId);
 }

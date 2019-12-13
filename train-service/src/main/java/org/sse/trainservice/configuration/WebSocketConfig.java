@@ -2,6 +2,7 @@ package org.sse.trainservice.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.server.standard.ServerEndpointExporter;
 
 /**
@@ -13,6 +14,7 @@ import org.springframework.web.socket.server.standard.ServerEndpointExporter;
  * @data: 2019-12-02 14:09
  **/
 @Configuration
+@EnableWebSocketMessageBroker
 public class WebSocketConfig {
 
     @Bean

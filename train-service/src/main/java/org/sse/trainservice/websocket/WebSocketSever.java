@@ -31,7 +31,7 @@ public class WebSocketSever {
     public void onOpen(Session session,@PathParam("userId") String userId) {
         this.session = session;
         websocketList.put(userId,this);
-        addOnlineCount();           //在线数加1
+        addOnlineCount();
         this.userId=userId;
         try {
             sendMessage("连接成功");
@@ -43,7 +43,7 @@ public class WebSocketSever {
     public void onClose() {
         if(websocketList.get(this.userId)!=null){
             websocketList.remove(this.userId);
-            subOnlineCount();           //在线数减1
+            subOnlineCount();
         }
     }
 
