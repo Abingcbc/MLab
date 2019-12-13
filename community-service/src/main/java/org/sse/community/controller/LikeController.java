@@ -7,6 +7,8 @@ import org.sse.community.mapper.LikeMapper;
 import org.sse.community.model.Like;
 import org.sse.community.service.LikeService;
 
+import javax.websocket.server.PathParam;
+
 /**
  * @author HPY
  */
@@ -33,6 +35,11 @@ public class LikeController {
     @PostMapping("/unlike/comment")
     public boolean unlikeComment(@RequestBody LikeDTO likeDTO){
         return likeService.setUnlikeOnComment(likeDTO);
+    }
+
+    @GetMapping("/like/check")
+    public boolean checkLike(@RequestParam("user") String username,@RequestParam("type") long type,@RequestParam("type-id") long typeId){
+        return likeService.checkLike(username,type,typeId);
     }
 
 

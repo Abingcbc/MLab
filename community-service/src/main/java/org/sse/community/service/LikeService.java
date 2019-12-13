@@ -148,4 +148,14 @@ public class LikeService {
 
     }
 
+    public boolean checkLike(String username, long type, long typeId) {
+        Like like = likeMapper.getLikeByNameAndType(username,type,typeId);
+        if(like!=null && like.getStatus()==1) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
 }

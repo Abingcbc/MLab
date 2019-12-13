@@ -44,7 +44,9 @@ public interface LikeMapper {
             @Result(property = "typeId",column = "type_id"),
             @Result(property = "createTime",column = "create_time")
     })
-    Like getLikeByNameAndType(@Param("username") String username, @Param("type") long type, @Param("id") long id);
+    Like getLikeByNameAndType(@Param("username") String username,
+                              @Param("type") long type,
+                              @Param("id") long id);
 
     /**
      * insert like into Like with parameters as follows

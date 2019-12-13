@@ -4,8 +4,10 @@ spring:
     username: root
     password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    time-zone: GMT+8
 server:
-  port: 8080
+  port: 8084
 
 pagehelper:
   helperDialect: mysql
