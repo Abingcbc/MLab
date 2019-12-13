@@ -23,8 +23,7 @@ public class CommentController {
     PostService postService;
 
     @PostMapping("/publish")
-    boolean postComment(@RequestBody Comment comment) {
-
+    long postComment(@RequestBody Comment comment) {
         return commentService.postComment(comment);
     }
 

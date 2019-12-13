@@ -30,16 +30,18 @@ public class CommentService {
     UserMapper userMapper;
 
     @Transactional(rollbackFor = Exception.class)
-    public boolean postComment(Comment comment){
+    public long postComment(Comment comment){
         if(postMapper.getPostByPostId(comment.getPostId())==null){
-            return false;
+            return 0;
         }
         else if(postMapper.checkStatus(comment.getPostId())==1) {
-            return false;
+            return 0;
         }
         else {
             postMapper.addCommentNum(comment.getPostId());
-            return commentMapper.insertIntoComment(comment.getPostId(),comment.getUsername(),comment.getContent());
+            commentMapper.insertIntoComment(comment);
+            long id = comment.getCommentId();
+            return id;
         }
     }
 

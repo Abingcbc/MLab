@@ -17,16 +17,12 @@ import java.util.List;
 public interface CommentMapper {
     /**
      * insert comment into Comment
-     * @param postId postId
-     * @param username username
-     * @param content content
      * @return is inserted
      */
     @Insert("insert into comment (post_id,username,content,create_time,`status`,reply_num,like_num)\n" +
             "values(#{postId},#{username},#{content},now(),0,0,0)")
-    boolean insertIntoComment(@Param("postId") long postId,
-                              @Param("username") String username,
-                              @Param("content") String content);
+    @Options(useGeneratedKeys = true, keyProperty = "commentId",keyColumn = "comment_id")
+    long insertIntoComment(Comment comment);
 
     /**
      * get comment by id
