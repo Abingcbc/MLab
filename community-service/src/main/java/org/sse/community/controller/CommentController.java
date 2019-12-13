@@ -3,6 +3,7 @@ package org.sse.community.controller;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.sse.community.dto.CommentDTO;
 import org.sse.community.model.Comment;
 import org.sse.community.model.Post;
 import org.sse.community.service.CommentService;
@@ -39,9 +40,9 @@ public class CommentController {
         return commentService.deleteComment(commentId);
     }
     @GetMapping("/get-comments-of-post/{postId}")
-    PageInfo<Comment> getCommentsOfPost(@PathVariable long postId,
-                               @RequestParam("page-num") int pageNum,
-                               @RequestParam("page-size") int pageSize) {
+    PageInfo<CommentDTO> getCommentsOfPost(@PathVariable long postId,
+                                           @RequestParam("page-num") int pageNum,
+                                           @RequestParam("page-size") int pageSize) {
         return commentService.getCommentsByPostId(postId,pageNum,pageSize);
     }
 }

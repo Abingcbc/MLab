@@ -1,11 +1,16 @@
 package org.sse.community.model;
 
 
+/**
+ * @author HPY
+ */
 public class User {
 
   private String username;
   private String password;
   private String email;
+  private long likeNum;
+  private String avatarUrl;
 
 
   public String getUsername() {
@@ -32,6 +37,24 @@ public class User {
 
   public void setEmail(String email) {
     this.email = email;
+  }
+
+
+  public long getLikeNum() {
+    return likeNum;
+  }
+
+  public void setLikeNum(long likeNum) {
+    this.likeNum = likeNum;
+  }
+
+
+  public String getAvatarUrl() {
+    return avatarUrl;
+  }
+
+  public void setAvatarUrl(String avatarUrl) {
+    this.avatarUrl = avatarUrl;
   }
 
 }

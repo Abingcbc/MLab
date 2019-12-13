@@ -2,6 +2,7 @@ package org.sse.community.mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
+import org.sse.community.dto.CommentDTO;
 import org.sse.community.model.Comment;
 import org.sse.community.model.Post;
 import org.sse.community.model.Reply;
@@ -60,7 +61,7 @@ public interface CommentMapper {
             "FROM\n" +
             "    comment\n" +
             "WHERE\n" +
-            "    post_id = 4 AND `status` = 0\n" +
+            "    post_id = #{postId} AND `status` = 0\n" +
             "ORDER BY comment_id DESC\n" )
     @Results(value ={
             @Result(property = "commentId",column = "comment_id"),
@@ -70,7 +71,7 @@ public interface CommentMapper {
             @Result(property = "likeNum",column = "like_num")
         }
     )
-    List<Comment> getCommentsByPostId(@Param("postId") long postId);
+    List<CommentDTO> getCommentsByPostId(@Param("postId") long postId);
 
 
     /**
