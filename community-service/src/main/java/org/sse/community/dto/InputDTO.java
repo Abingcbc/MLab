@@ -13,4 +13,14 @@ public class InputDTO {
     }
 
     private String searchInput;
+
+    public boolean isNull() {
+        return isNull;
+    }
+
+    public void setNull(boolean aNull) {
+        isNull = aNull;
+    }
+
+    private boolean isNull;
 }

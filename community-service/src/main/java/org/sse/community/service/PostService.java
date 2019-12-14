@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.sse.community.dto.PostDTO;
 import org.sse.community.mapper.CommentMapper;
 import org.sse.community.mapper.LikeMapper;
 import org.sse.community.mapper.PostMapper;
@@ -71,23 +72,27 @@ public class PostService {
      * @param postId post id
      * @return post
      */
-    public Post getPostByPostId(long postId){
-        Post post = postMapper.getPostByPostId(postId);
-        if(post==null){
+    public PostDTO getPostByPostId(long postId){
+        PostDTO postDTO = postMapper.getPostByPostId(postId);
+        if(postDTO==null){
             return null;
         }
-        else if(post.getStatus()==1) {
+        else if(postDTO.getStatus()==1) {
             return null;
         }
         else {
-            return post;
+            postDTO.setAvatarUrl(userMapper.getAvatarUrl(postDTO.getUsername()));
+            return postDTO;
         }
     }
 
-    public PageInfo<Post> searchPostsOrderByTime(int pageNum, int pageSize, String keyword){
+    public PageInfo<PostDTO> searchPostsOrderByTime(int pageNum, int pageSize, String keyword){
         keyword = "%"+keyword+"%";
         PageHelper.startPage(pageNum,pageSize);
-        List<Post> list=postMapper.searchPostsOrderByTime(keyword);
+        List<PostDTO> list=postMapper.searchPostsOrderByTime(keyword);
+        for(PostDTO postDTO:list){
+            postDTO.setAvatarUrl(userMapper.getAvatarUrl(postDTO.getUsername()));
+        }
         return new PageInfo<>(list);
     }
 
@@ -95,10 +100,13 @@ public class PostService {
         return postMapper.selectCount();
     }
 
-    public PageInfo<Post> searchPostsOrderByLikeNum(int pageNum,int pageSize,String keyword){
+    public PageInfo<PostDTO> searchPostsOrderByLikeNum(int pageNum, int pageSize, String keyword){
         keyword = "%"+keyword+"%";
         PageHelper.startPage(pageNum,pageSize);
-        List<Post> list = postMapper.searchPostsOrderByLikeNum(keyword);
+        List<PostDTO> list = postMapper.searchPostsOrderByLikeNum(keyword);
+        for(PostDTO postDTO:list){
+            postDTO.setAvatarUrl(userMapper.getAvatarUrl(postDTO.getUsername()));
+        }
         return new PageInfo<>(list);
     }
 }
