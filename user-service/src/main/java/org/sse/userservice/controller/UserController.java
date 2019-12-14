@@ -67,4 +67,9 @@ public class UserController {
         }
         return result;
     }
+
+    @GetMapping(value = "/avatar/{username}")
+    public String getUserAvatarUrlByUsername(@PathVariable("username") String username) {
+        return userService.getUserInfoWithoutPassword(username).getAvatarUrl();
+    }
 }

@@ -18,7 +18,7 @@ public interface PipelineMapper {
      * @param username username
      * @return list of all pipelines
      */
-    @Select("select * from pipeline where username = #{username};")
+    @Select("select * from pipeline where username = #{username} and status = 0;")
     List<Pipeline> getAllPipelineByUsername(@Param(value = "username") String username);
 
     /**
@@ -29,7 +29,7 @@ public interface PipelineMapper {
     @Insert("insert into pipeline(username, pipeline_name, " +
             "description, create_time, status) \n" +
             "values (#{username}, #{pipelineName}, #{description}," +
-            "NOW(), 1);")
+            "NOW(), 0);")
     @Options(useGeneratedKeys = true, keyProperty = "pipelineId")
     int createNewPipeline(Pipeline pipeline);
 
@@ -38,7 +38,7 @@ public interface PipelineMapper {
      * @param pipelineId pipeline id
      * @return object of pipeline
      */
-    @Select("select * from pipeline where pipeline_id = #{pipelineId};")
+    @Select("select * from pipeline where pipeline_id = #{pipelineId} and status = 0;")
     Pipeline getPipelineById(@Param("pipelineId") Long pipelineId);
 
     /**
@@ -46,7 +46,7 @@ public interface PipelineMapper {
      * @param pipelineId pipeline id
      */
     @Update(value = "update pipeline\n" +
-            "set status = 0\n" +
+            "set status = 1\n" +
             "where pipeline_id = #{pipelineId}\n")
     void deletePipelineById(@Param("pipelineId") Long pipelineId);
 }

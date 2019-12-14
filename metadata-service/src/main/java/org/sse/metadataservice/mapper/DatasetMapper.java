@@ -18,7 +18,7 @@ public interface DatasetMapper {
      * @param username username
      * @return a list of all user's dataset
      */
-    @Select(value = "select * from dataset where username = #{username}")
+    @Select(value = "select * from dataset where username = #{username} and status = 0")
     List<Dataset> getAllDatasetByUsername(@Param(value = "username") String username);
 
     /**
@@ -28,7 +28,7 @@ public interface DatasetMapper {
      */
     @Insert(value = "insert into dataset(username, dataset_name, description, format, size, create_time, is_public, status)\n" +
             "values (#{username}, #{datasetName}, #{description}, " +
-            "#{format}, #{size}, NOW(), #{isPublic}, 0);")
+            "#{format}, #{size}, NOW(), #{isPublic}, 1);")
     @Options(useGeneratedKeys = true, keyProperty = "datasetId")
     int createNewDataset(Dataset dataset);
 
@@ -37,11 +37,12 @@ public interface DatasetMapper {
      * @param datasetId dataset id
      * @return metadata of dataset
      */
-    @Select(value = "select * from dataset where dataset_id = #{datasetId}")
+    @Select(value = "select * from dataset where dataset_id = #{datasetId} and status = 0")
     Dataset getDatasetById(@Param(value = "datasetId") Long datasetId);
 
     /**
-     * delete dataset by dataset id, only set status to 0
+     * delete dataset by dataset id, only set status to 1
+     * or enable dataset when successfully upload
      * @param datasetId dataset id
      * @param status status
      */

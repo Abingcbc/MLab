@@ -18,7 +18,7 @@ public interface NodeMapper {
      * @param username username
      * @return list of all nodes
      */
-    @Select("select * from node where username = #{username};")
+    @Select("select * from node where username = #{username} and status = 0;")
     List<Node> getAllNodeByUsername(@Param(value = "username") String username);
 
     /**
@@ -27,7 +27,7 @@ public interface NodeMapper {
      * @return num of affected row
      */
     @Insert("insert into node(username, name, create_time, status)\n" +
-            "values (#{username}, #{name}, NOW(), 1);")
+            "values (#{username}, #{name}, NOW(), 0);")
     @Options(useGeneratedKeys = true, keyProperty = "nodeId")
     int createNewNode(Node node);
 
@@ -36,7 +36,7 @@ public interface NodeMapper {
      * @param nodeId node id
      * @return object of node
      */
-    @Select("select * from node where node_id = #{nodeId};")
+    @Select("select * from node where node_id = #{nodeId} and status = 0;")
     Node getNodeById(@Param("nodeId") Long nodeId);
 
     /**
@@ -44,7 +44,7 @@ public interface NodeMapper {
      * @param nodeId node id
      */
     @Update(value = "update node\n" +
-            "set status = 0\n" +
+            "set status = 1\n" +
             "where node_id = #{nodeId}\n")
     void deleteNodeById(@Param("nodeId") Long nodeId);
 }

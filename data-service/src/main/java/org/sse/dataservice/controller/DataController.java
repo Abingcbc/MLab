@@ -1,7 +1,7 @@
 package org.sse.dataservice.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.sse.dataservice.model.Chunk;
 import org.sse.dataservice.model.FileInfo;
 import org.sse.dataservice.service.DataService;
@@ -13,6 +13,7 @@ import java.io.*;
  * @author cbc
  */
 @RestController
+@Slf4j
 public class DataController {
 
     private final DataService dataService;
@@ -22,10 +23,10 @@ public class DataController {
     }
 
     @GetMapping(value = "/chunk")
-    public void checkIsChunkExisted(@RequestParam(value = "datasetId") Long datasetId,
-                                    @RequestParam(value = "identifier") String identifier,
+    public void checkIsChunkExisted(Chunk chunk,
                                     HttpServletResponse response) {
-        Boolean status = dataService.checkIsChunkExisted(datasetId, identifier);
+        Boolean status = dataService.checkIsChunkExisted(chunk);
+        // Vue-simple-uploader regulates that 200 means existed
         if (status) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
@@ -46,10 +47,10 @@ public class DataController {
     }
 
     @PostMapping(value = "/merge")
-    public void mergeFile(@RequestParam(value = "datasetId") Long datasetId,
+    public void mergeFile(FileInfo fileInfo,
                           HttpServletResponse response) {
         try {
-            int status = dataService.merge(datasetId);
+            int status = dataService.merge(fileInfo.getIdentifier(), fileInfo.getTotalChunkNum());
             switch (status) {
                 case 1:
                     response.setStatus(HttpServletResponse.SC_OK);
