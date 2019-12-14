@@ -2,6 +2,7 @@ package org.sse.metadataservice.mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
+import org.sse.metadataservice.DTO.DatasetPostDTO;
 import org.sse.metadataservice.model.Dataset;
 
 import java.util.List;
@@ -51,4 +52,21 @@ public interface DatasetMapper {
             "where dataset_id = #{datasetId}\n")
     void updateDatasetStatusById(@Param(value = "datasetId") Long datasetId,
                                  @Param(value = "status") Integer status);
+
+    /**
+     * get dataset bt keyword
+     * @param keyword search key
+     * @return a list of DTO
+     */
+    @Select(value = "select * " +
+            "from dataset " +
+            "where dataset_name like #{keyword} and status = 0" +
+            "order by dataset_id desc")
+    @Results(value = {
+            @Result(property = "datasetId",column = "dataset_id"),
+            @Result(property = "datasetName",column = "dataset_name"),
+            @Result(property = "createTime", column = "create_time"),
+            @Result(property = "isPublic",column = "is_public")
+    })
+    List<DatasetPostDTO> selectDatasetByKeyword(@Param("keyword")String keyword);
 }

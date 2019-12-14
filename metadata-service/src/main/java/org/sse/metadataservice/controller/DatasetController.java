@@ -1,10 +1,12 @@
 package org.sse.metadataservice.controller;
 
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.sse.metadataservice.DTO.DatasetPostDTO;
 import org.sse.metadataservice.model.Dataset;
 import org.sse.metadataservice.model.Result;
 import org.sse.metadataservice.service.DatasetService;
@@ -64,6 +66,13 @@ public class DatasetController {
     @PostMapping(value = "/dataset_enable")
     public void enableDataset(@RequestBody Long datasetId) {
         datasetService.updateDatasetStatus(datasetId, 1);
+    }
+
+    @GetMapping(value = "/dataset/{keyWord}/{pageNum}/{pageSize}")
+    public PageInfo<DatasetPostDTO> getAllDataset(@PathVariable String keyWord,
+                                                  @PathVariable int pageNum,
+                                                  @PathVariable int pageSize) {
+        return datasetService.getDatasetPostByString(keyWord, pageNum, pageSize);
     }
 
 }

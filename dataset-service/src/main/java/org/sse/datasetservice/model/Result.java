@@ -1,4 +1,4 @@
-package org.sse.datasetservice.utils;
+package org.sse.datasetservice.model;
 
 /**
  * @author ZTL

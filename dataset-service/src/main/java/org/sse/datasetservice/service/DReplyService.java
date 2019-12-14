@@ -1,5 +1,7 @@
 package org.sse.datasetservice.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.sse.datasetservice.client.UserServiceClient;
 import org.sse.datasetservice.dto.DReplyDto;
 import org.sse.datasetservice.mapper.DReplyMapper;
@@ -21,13 +23,14 @@ public class DReplyService {
     @Autowired
     UserServiceClient userServiceClient;
 
-    public List<DReplyDto> getReplyByCommentId(Long id){
+    public PageInfo<DReplyDto> getReplyByCommentId(Long id, int pageNum, int pageSize){
+        PageHelper.startPage(pageNum,pageSize);
         List<DReply> dReplyList = dReplyMapper.getReplyByCommentId(id);
         List<DReplyDto> dReplyDtoList = new ArrayList<>();
         for (DReply dReply : dReplyList) {
             dReplyDtoList.add(new DReplyDto(dReply, userServiceClient.getUserAvatarUrlByUsername(dReply.getUsername())));
         }
-        return dReplyDtoList;
+        return new PageInfo<>(dReplyDtoList);
     }
 
     public boolean insertReplyByCommentId(String username,Long dCommentId,String content){
