@@ -18,7 +18,7 @@ public interface HistoryMapper {
      * @param username username
      * @return a list of train task
      */
-    @Select(value = "select * from history where username = #{username} and run_type = 1;")
+    @Select(value = "select * from history where username = #{username} and run_type = 1 and status = 0;")
     List<History> getAllTrainByUsername(@Param(value = "username") String username);
 
     /**
@@ -26,7 +26,7 @@ public interface HistoryMapper {
      * @param username username
      * @return a list of test task
      */
-    @Select(value = "select * from history where username = #{username} and run_type = 0;")
+    @Select(value = "select * from history where username = #{username} and run_type = 0 and status = 0;")
     List<History> getAllTestByUsername(@Param("username") String username);
 
     /**
@@ -37,7 +37,7 @@ public interface HistoryMapper {
     @Insert(value = "insert into history (run_type, username, " +
             "pipeline_id, model_id, start_time, status)\n" +
             "values (#{runType}, #{username}, #{pipelineId}," +
-            "#{modelId}, NOW(), 1);")
+            "#{modelId}, NOW(), 0);")
     @Options(useGeneratedKeys = true, keyProperty = "historyId")
     int createNewHistory(History history);
 
@@ -46,7 +46,7 @@ public interface HistoryMapper {
      * @param historyId history id
      * @return object of history
      */
-    @Select(value = "select * from history where history_id = #{historyId};")
+    @Select(value = "select * from history where history_id = #{historyId} and status = 0;")
     History getHistoryById(@Param("historyId") Long historyId);
 
     /**
@@ -54,7 +54,7 @@ public interface HistoryMapper {
      * @param historyId history id
      */
     @Update(value = "update history\n" +
-            "set status = 0\n" +
+            "set status = 1\n" +
             "where history_id = #{historyId};")
     void deleteHistoryById(@Param("historyId") Long historyId);
 }
