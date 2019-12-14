@@ -5,8 +5,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.sse.community.dto.ReplyDTO;
 import org.sse.community.mapper.CommentMapper;
 import org.sse.community.mapper.ReplyMapper;
+import org.sse.community.mapper.UserMapper;
 import org.sse.community.model.Comment;
 import org.sse.community.model.Reply;
 
@@ -21,6 +23,8 @@ public class ReplyService {
     ReplyMapper replyMapper;
     @Autowired
     CommentMapper commentMapper;
+    @Autowired
+    UserMapper userMapper;
 
     public boolean insertIntoReply(Reply reply){
         Comment comment=commentMapper.getCommentById(reply.getCommentId());
@@ -49,12 +53,14 @@ public class ReplyService {
         }
     }
 
-    public PageInfo<Reply> getRepliesByCommentId(long commentId,int pageNum,int pageSize) {
+    public PageInfo<ReplyDTO> getRepliesByCommentId(long commentId, int pageNum, int pageSize) {
         PageHelper.startPage(pageNum,pageSize);
-        List<Reply> list = replyMapper.getRepliesByCommentId(commentId);
-        System.out.println(list.toString());
-        PageInfo<Reply> pageInfo = new PageInfo<>(list);
-        System.out.println(pageInfo.getList().toString());
+        List<ReplyDTO> list = replyMapper.getRepliesByCommentId(commentId);
+        for(ReplyDTO c : list) {
+            String url = userMapper.getAvatarUrl(c.getUsername());
+            c.setAvatarUrl(url);
+        }
+        PageInfo<ReplyDTO> pageInfo = new PageInfo<>(list);
         return pageInfo;
     }
 

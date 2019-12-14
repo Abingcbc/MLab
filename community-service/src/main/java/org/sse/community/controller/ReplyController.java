@@ -4,6 +4,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.sse.community.dto.ReplyDTO;
 import org.sse.community.model.Reply;
 import org.sse.community.service.ReplyService;
 
@@ -29,9 +30,9 @@ public class ReplyController {
     }
 
     @GetMapping("/get-replies-of-comment/{commentId}")
-    public PageInfo<Reply> getRepliesOfComment(@PathVariable long commentId,
-                                        @RequestParam("page-num") int pageNum,
-                                        @RequestParam("page-size") int pageSize) {
+    public PageInfo<ReplyDTO> getRepliesOfComment(@PathVariable long commentId,
+                                                  @RequestParam("page-num") int pageNum,
+                                                  @RequestParam("page-size") int pageSize) {
         return replyService.getRepliesByCommentId(commentId,pageNum,pageSize);
     }
 

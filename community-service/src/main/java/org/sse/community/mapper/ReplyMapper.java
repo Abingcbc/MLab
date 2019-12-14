@@ -2,6 +2,7 @@ package org.sse.community.mapper;
 
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
+import org.sse.community.dto.ReplyDTO;
 import org.sse.community.model.Reply;
 
 import java.util.List;
@@ -68,7 +69,7 @@ public interface ReplyMapper {
             @Result(property = "commentId",column = "comment_id"),
             @Result(property = "createTime",column = "create_time")
     })
-    List<Reply> getRepliesByCommentId(@Param("commentId") long commentId);
+    List<ReplyDTO> getRepliesByCommentId(@Param("commentId") long commentId);
 
 
 

@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import javafx.geometry.Pos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.sse.community.dto.InputDTO;
 import org.sse.community.model.Post;
 import org.sse.community.service.PostService;
 
@@ -76,8 +77,8 @@ public class PostController {
     @PostMapping("/search-order-by-like")
     public PageInfo<Post> searchPostsOrderByLike(@RequestParam("page-num") int pageNum,
                                              @RequestParam("page-size") int pageSize,
-                                             @RequestBody String keyword) {
-        return postService.searchPostsOrderByTime(pageNum,pageSize,keyword);
+                                             @RequestBody InputDTO keyword) {
+        return postService.searchPostsOrderByTime(pageNum,pageSize,keyword.getSearchInput());
     }
 
     @GetMapping("/num")

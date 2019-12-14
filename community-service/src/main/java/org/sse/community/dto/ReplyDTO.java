@@ -12,6 +12,7 @@ public class ReplyDTO {
   private String content;
   private java.sql.Timestamp createTime;
   private long status;
+  private String avatarUrl;
 
   public String getAvatarUrl() {
     return avatarUrl;
@@ -20,8 +21,6 @@ public class ReplyDTO {
   public void setAvatarUrl(String avatarUrl) {
     this.avatarUrl = avatarUrl;
   }
-
-  private String avatarUrl;
 
 
   public long getReplyId() {
