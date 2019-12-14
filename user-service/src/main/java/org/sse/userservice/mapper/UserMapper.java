@@ -16,7 +16,7 @@ public interface UserMapper {
      * @param username user's name
      * @return user auth info
      */
-    @Select("select * from USER where username = #{username}")
+    @Select("select * from user where username = #{username}")
     User getUserByUsername(@Param("username") String username);
 
     /**
@@ -27,7 +27,7 @@ public interface UserMapper {
      * @param avatarUrl avatar url
      * @return number of affected rows
      */
-    @Insert("insert into USER values(#{username}, #{password}, #{email}, #{avatarUrl});")
+    @Insert("insert into user values(#{username}, #{password}, #{email}, #{avatarUrl});")
     int createNewUser(@Param("username") String username,
                       @Param("password") String password,
                       @Param("email") String email,
