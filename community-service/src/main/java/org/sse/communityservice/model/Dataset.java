@@ -1,4 +1,4 @@
-package org.sse.community.model;
+package org.sse.communityservice.model;
 
 
 /**
