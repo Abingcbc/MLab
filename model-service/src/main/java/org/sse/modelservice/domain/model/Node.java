@@ -43,15 +43,17 @@ public class Node {
     public void setConfig(JSONObject jsonObject) {
         String name = jsonObject.getString("name");
         System.out.println(name);
-        if (name.equals("Tokenizer")) {
+        if (name.equals("TokenizerNode")) {
             System.out.println("OK!!!!!!!!!!!!!!!!!");
             config = new TokenizerNodeConfig(jsonObject.getString("inputCol"), jsonObject.getString("outputCol"));
-        } else if (name.equals("HashingTF")) {
+        } else if (name.equals("HashingTFNode")) {
             config = new HashingTFNodeConfig(jsonObject.getString("inputCol"), jsonObject.getString("outputCol"),jsonObject.getInteger("numFeatures"));
-        } else if (name.equals("LogisticRegression")) {
+        } else if (name.equals("LogisticRegressionNode")) {
             config = new LogisticRegressionNodeConfig(jsonObject.getInteger("maxIter"), jsonObject.getDouble("regParam"));
-        }else if(name.equals("Input")){
+        }else if(name.equals("InputNode")){
             config=new InputNodeConfig(jsonObject.getString("fileName"));
+        }else if(name.equals("OutputNode")){
+            config=new OutputNodeConfig();
         }
     }
 

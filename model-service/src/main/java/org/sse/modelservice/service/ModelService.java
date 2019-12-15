@@ -46,6 +46,7 @@ public class ModelService {
         Model model = new Model(pipelineInformation);
         String inputFile=new String();
         for (int i = 0; i < nodeArray.size(); ++i) {
+
             Node node = new Node(nodeArray.getJSONObject(i).getInteger("key"));
             node.setConfig(nodeArray.getJSONObject(i));
             if(node.getConfig().getType()=="Input"){
@@ -94,7 +95,7 @@ public class ModelService {
         SparkSession spark=SparkSession.builder().appName(model.getPipelineInformation().getPipelineName()).master("local").getOrCreate();
         ArrayList<PipelineStage> pipelineStages = new ArrayList<PipelineStage>();
         for (Node node : model.getNodeList()) {
-            if(node.getConfig().getType()=="Input"){
+            if(node.getConfig().getType()=="Input"||node.getConfig().getType()=="Output"){
                 continue;
             }
             pipelineStages.add(node.getConfig().getPipelineStage());
