@@ -20,11 +20,13 @@ import org.springframework.data.annotation.Id;
 public class Graph {
     @Id
     private String graphId;
+    private String username;
     private String inputFile;
     private JSONObject model;
-    public Graph(String graphId,String inputFile, JSONObject model){
+    public Graph(String graphId,String inputFile,String username, JSONObject model){
         this.graphId=graphId;
         this.inputFile=inputFile;
         this.model=model;
+        this.username=username;
     }
 }

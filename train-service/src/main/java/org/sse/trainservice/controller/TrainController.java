@@ -31,11 +31,11 @@ public class TrainController {
     @Autowired
     MailService mailService;
 
-    @RequestMapping(value = "/train/{userId}/{pipelineId}/{fileId}", method = RequestMethod.GET)
-    public boolean train(@PathVariable String userId, @PathVariable long pipelineId,@PathVariable String fileId){ return trainService.pushIntoTrainMq(userId,pipelineId,fileId); }
+    @RequestMapping(value = "/train/{username}/{pipelineId}/{pipelineName}/{fileId}", method = RequestMethod.GET)
+    public boolean train(@PathVariable String username,@PathVariable long pipelineId, @PathVariable String pipelineName,@PathVariable String fileId,@RequestParam(name = "description") String description){ return trainService.pushIntoTrainMq(username,pipelineId,pipelineName,description,fileId); }
 
-    @RequestMapping(value = "/predict/{userId}/{modelId}/{fileId}", method = RequestMethod.GET)
-    public boolean predict(@PathVariable String userId, @PathVariable long modelId, @PathVariable String fileId){return trainService.pushIntoPredictMq(userId, modelId, fileId);}
+    @RequestMapping(value = "/predict/{username}/{modelId}/{pipelineName}/{fileId}", method = RequestMethod.GET)
+    public boolean predict(@PathVariable String username,@PathVariable long modelId, @PathVariable String modelName, @PathVariable String fileId){return trainService.pushIntoPredictMq(username,modelId, modelName, fileId);}
 
 
 }

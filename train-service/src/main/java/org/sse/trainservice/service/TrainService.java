@@ -1,9 +1,13 @@
 package org.sse.trainservice.service;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.sse.trainservice.client.MedataServiceClient;
 import org.sse.trainservice.configuration.RabbitConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.sse.trainservice.domain.Model;
+import org.sse.trainservice.domain.Task;
+import org.sse.trainservice.websocket.WebSocketSever;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,24 +24,30 @@ import java.util.Map;
 public class TrainService {
     @Autowired
     RabbitTemplate rabbitTemplate;
+    @Autowired
+    MedataServiceClient medataServiceClient;
+    @Autowired
+    WebSocketSever webSocketSever;
 
-    public Boolean pushIntoTrainMq(String userId, Long pipelineId, String fileId){
+    public Boolean pushIntoTrainMq(String username, Long pipelineId,String pipelineName,String description, String fileId){
 
         try {
+            long modelId= medataServiceClient.createNewModel(new Model(username,pipelineName,description));
+            Long historyId=medataServiceClient.createNewHistory(new Task(0,username,pipelineId,modelId));
             Map<String,String> map=new HashMap<String, String>();
-            map.put("userId",userId);
-            map.put("pipelineId",pipelineId.toString());
+            map.put("userId",username);
+            map.put("pipelineId",pipelineName);
             map.put("fileId",fileId);
             rabbitTemplate.convertAndSend(RabbitConfig.TASK_EXCHANGE_NAME, RabbitConfig.TASK_ROUTING_NAME,map);
         }catch (Exception e){
-            return false;
+            e.printStackTrace();
         }
         return true;
     }
-    public Boolean pushIntoPredictMq(String userId, Long modelId, String fileId){
+    public Boolean pushIntoPredictMq(String username, Long modelId,String modelName, String fileId){
         try {
             Map<String,String> map=new HashMap<String, String>();
-            map.put("userId",userId);
+            map.put("userId",username);
             map.put("pipelineId",modelId.toString());
             map.put("fileId",fileId);
             rabbitTemplate.convertAndSend(RabbitConfig.PREDICT_EXCHANGE_NAME, RabbitConfig.PREDICT_ROUTING_NAME,map);

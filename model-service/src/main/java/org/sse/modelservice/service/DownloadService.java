@@ -19,9 +19,9 @@ import java.util.zip.ZipOutputStream;
 @Service
 public class DownloadService {
 
-    public int download(Long userId,String fileType, Long fileId,String format, HttpServletResponse response){
-        File src=new File(fileType+"/"+userId.toString()+"/"+fileId);
-        File zipDir=new File("tmp/"+fileId+"."+format);
+    public int download(String username,String fileType, String filename,String format, HttpServletResponse response){
+        File src=new File(fileType+"/"+username+"/"+filename);
+        File zipDir=new File("tmp/"+filename+"."+"zip");
         try{
             FileOutputStream fos = new FileOutputStream(zipDir);
             ZipOutputStream zos = new ZipOutputStream(fos);
@@ -33,7 +33,7 @@ public class DownloadService {
             BufferedInputStream bis = null;
             try {
 
-                File file=new File("tmp/"+fileId+".zip");
+                File file=new File("tmp/"+filename+".zip");
                 fis = new FileInputStream(file);
                 bis = new BufferedInputStream(fis);
                 OutputStream os = response.getOutputStream();
@@ -44,6 +44,7 @@ public class DownloadService {
                 }
             }
             catch (Exception e) {
+                e.printStackTrace();
                 return -1;
             }
             finally {
@@ -63,6 +64,7 @@ public class DownloadService {
                 }
             }
         }catch (Exception e){
+            e.printStackTrace();
             return -1;
         }
         return 1;

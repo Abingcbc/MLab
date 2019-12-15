@@ -40,4 +40,5 @@ public class HistoryService {
         historyMapper.deleteHistoryById(historyId);
     }
 
+    public void setHistory(Long historyId,Integer status){historyMapper.setHistoryById(historyId,status);}
 }

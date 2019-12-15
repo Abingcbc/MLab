@@ -69,6 +69,6 @@ public class WebSocketSever {
         WebSocketSever.onlineCount--;
     }
 
-    public static WebSocketSever get(Integer userID){return WebSocketSever.websocketList.get(userID.toString());}
+    public static WebSocketSever get(String userID){return WebSocketSever.websocketList.get(userID);}
 
 }

@@ -7,13 +7,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.sse.modelservice.domain.model.PipelineInformation;
-import org.sse.modelservice.domain.model.Response;
+import org.sse.modelservice.domain.model.Result;
 
 @FeignClient(name = "metadata-service")
 public interface MedataServiceClient {
     @PreAuthorize(value = "#oauth2.hasScope('server')")
     @GetMapping(value = "/pipeline")
-    ResponseEntity<Response> createNewPipeline(@RequestBody PipelineInformation pipelineInformation);
+    long createNewPipeline(@RequestBody PipelineInformation pipelineInformation);
 
     @PreAuthorize(value = "#oauth2.hasScope('server')")
     @GetMapping(value = "/pipeline_delete")

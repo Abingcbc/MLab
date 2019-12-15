@@ -64,11 +64,11 @@ public class ModelService {
         }
 
         String result=generateSparkPipeline(model);
-       /** ResponseEntity<Response> response=medataServiceClient.createNewPipeline(model.getPipelineInformation());
-        if(response.getStatusCode()!= HttpStatus.OK){
+        Long pipelineId=medataServiceClient.createNewPipeline(model.getPipelineInformation());
+        if(pipelineId==-1){
             return "fail";
-        }**/
-        mongoDao.save(new Graph("123",inputFile,jsonObject));
+        }
+        mongoDao.save(new Graph(pipelineId.toString(),inputFile,username,jsonObject));
         return result;
     }
 

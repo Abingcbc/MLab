@@ -44,7 +44,7 @@ public class TaskReceiver {
 
         try {
             SparkSession spark=SparkSession.builder().appName(map.get("pipelineId")).master("local").getOrCreate();
-            Dataset<Row> dataset=spark.read().option("inferSchema", true).option("header", true).csv("dataset/"+map.get("fileId")+".csv");
+            Dataset<Row> dataset=spark.read().option("inferSchema", true).option("header", true).csv("dataset/test.csv");//+map.get("fileId")+".csv");
             Pipeline pipeline= Pipeline.load("pipeline/"+map.get("userId")+"/"+map.get("pipelineId"));
             PipelineModel model=pipeline.fit(dataset);
             model.write().overwrite().save("model/"+map.get("userId")+"/"+map.get("pipelineId"));

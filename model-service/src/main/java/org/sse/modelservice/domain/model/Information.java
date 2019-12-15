@@ -14,13 +14,13 @@ import lombok.Data;
 public class Information {
     private long modelId;
     private String username;
-    private String modelName;
+    private String pipelineName;
     private String description;
     private java.sql.Timestamp createTime;
     private long status;
 
-    public Information(String username, String modelName, String description){
-        this.modelName=modelName;
+    public Information(String username, String pipielineName, String description){
+        this.pipelineName=pipelineName;
         this.username=username;
         this.description=description;
     }

@@ -57,4 +57,9 @@ public interface HistoryMapper {
             "set status = 0\n" +
             "where history_id = #{historyId};")
     void deleteHistoryById(@Param("historyId") Long historyId);
+
+    @Update(value = "update history\n" +
+            "set status = #{status}\n" +
+            "where history_id = #{historyId};")
+    void setHistoryById(@Param("historyId") Long historyId,@Param("status") Integer status);
 }

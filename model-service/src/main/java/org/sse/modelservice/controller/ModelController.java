@@ -45,12 +45,12 @@ public class ModelController {
     @RequestMapping(value = "/delete/{userId}/{fileType}/{fileId}", method = RequestMethod.GET)
     public int delete(@PathVariable long userId,@PathVariable String fileType,@PathVariable long fileId){return modelService.deleteFile(userId,fileType,fileId);}
 
-    @RequestMapping(value = "/download/{userId}/{fileType}/{fileId}.{format}", method = RequestMethod.GET)
-    public void download(HttpServletResponse response, @PathVariable long userId, @PathVariable String fileType,@PathVariable long fileId,@PathVariable String format) {
+    @RequestMapping(value = "/download/{username}/{fileType}/{filename}.{format}", method = RequestMethod.GET)
+    public void download(HttpServletResponse response, @PathVariable String username, @PathVariable String fileType,@PathVariable String filename,@PathVariable String format) {
         response.setHeader("content-type", "application/octet-stream");
         response.setContentType("application/octet-stream");
         try {
-            if (downloadService.download(userId,fileType, fileId,format,response) == 1) {
+            if (downloadService.download(username,fileType, filename,format,response) == 1) {
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
