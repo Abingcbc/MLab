@@ -1,0 +1,1 @@
+{"timestamp":"2019-12-15T19:50:57.309+0000","status":500,"error":"Internal Server Error","message":"status 500 reading MetadataServiceClient#getDatasetPermission(String,String)","path":"/download/55/csv"}

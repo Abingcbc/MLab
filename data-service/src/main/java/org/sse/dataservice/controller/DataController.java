@@ -67,6 +67,7 @@ public class DataController {
                 default:
             }
         } catch (Exception e) {
+            e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
@@ -91,6 +92,7 @@ public class DataController {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
             }
         } catch (IOException e) {
+            e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }

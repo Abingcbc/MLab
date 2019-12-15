@@ -38,7 +38,7 @@ public interface DatasetMapper {
      * @param datasetId dataset id
      * @return metadata of dataset
      */
-    @Select(value = "select * from dataset where dataset_id = #{datasetId} and status = 0")
+    @Select(value = "select * from dataset where dataset_id = #{datasetId}")
     Dataset getDatasetById(@Param(value = "datasetId") Long datasetId);
 
     /**

@@ -60,12 +60,12 @@ public class DatasetController {
 
     @PostMapping(value = "/dataset_delete")
     public void deleteDataset(@RequestBody Long datasetId) {
-        datasetService.updateDatasetStatus(datasetId, 0);
+        datasetService.updateDatasetStatus(datasetId, 1);
     }
 
     @PostMapping(value = "/dataset_enable")
     public void enableDataset(@RequestBody Long datasetId) {
-        datasetService.updateDatasetStatus(datasetId, 1);
+        datasetService.updateDatasetStatus(datasetId, 0);
     }
 
     @GetMapping(value = "/dataset/{keyWord}/{pageNum}/{pageSize}")
