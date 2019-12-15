@@ -15,11 +15,27 @@ import java.util.List;
 public interface UserMapper {
 
     /**
+     * get avatar url by username
+     * @param username username
+     * @return avatar
+     */
+    @Select("SELECT \n" +
+            "    avatar_url\n" +
+            "FROM\n" +
+            "    mlab.user\n" +
+            "WHERE\n" +
+            "    username = #{username}")
+    String getAvatarUrl(@Param("username") String username);
+
+    /**
      * get user by username
      * @param username username
      * @return user
      */
     @Select("select * from user where username = #{username}")
+    @Results(value = {
+            @Result(property = "avatarUrl",column = "avatar_url")
+    })
     User getUserByUsername(@Param("username") String username);
 
     /**

@@ -18,4 +18,5 @@ public class History {
   private java.sql.Timestamp endTime;
   private long status;
 
+
 }

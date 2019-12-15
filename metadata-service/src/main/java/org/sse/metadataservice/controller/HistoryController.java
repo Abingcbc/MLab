@@ -50,4 +50,10 @@ public class HistoryController {
     public void setHistory(@PathVariable Long historyId, @PathVariable Integer status) {
         historyService.setHistory(historyId,status);
     }
+
+    @GetMapping(value = "/history/{historyId}")
+    public void setEndTime(@PathVariable Long historyId){
+        historyService.setEndTime(historyId);
+    }
+
 }

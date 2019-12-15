@@ -21,8 +21,6 @@ import java.util.List;
 @EnableZuulProxy
 @SpringCloudApplication
 @EnableSwagger2Doc
-@EnableZuulWebSocket
-@EnableWebSocketMessageBroker
 public class GatewayApplication {
 
     public static void main(String[] args) {

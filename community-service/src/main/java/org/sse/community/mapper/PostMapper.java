@@ -3,6 +3,7 @@ package org.sse.community.mapper;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.sse.community.dto.PostDTO;
 import org.sse.community.model.Post;
 
 import java.util.List;
@@ -48,7 +49,7 @@ public interface PostMapper {
             @Result(property = "likeNum",column = "like_num"),
             @Result(property = "commentNum",column = "comment_num")
     })
-    Post getPostByPostId(@Param("postId") long postId);
+    PostDTO getPostByPostId(@Param("postId") long postId);
 
     /**
      * select status by postId
@@ -140,7 +141,7 @@ public interface PostMapper {
             @Result(property = "likeNum",column = "like_num"),
             @Result(property = "commentNum",column = "comment_num")
     })
-    List<Post> searchPostsOrderByTime(@Param("keyword") String keyword);
+    List<PostDTO> searchPostsOrderByTime(@Param("keyword") String keyword);
 
     /**
      * search posts order by like num
@@ -160,5 +161,5 @@ public interface PostMapper {
             @Result(property = "likeNum",column = "like_num"),
             @Result(property = "commentNum",column = "comment_num")
     })
-    List<Post> searchPostsOrderByLikeNum(@Param("keyword") String keyword);
+    List<PostDTO> searchPostsOrderByLikeNum(@Param("keyword") String keyword);
 }

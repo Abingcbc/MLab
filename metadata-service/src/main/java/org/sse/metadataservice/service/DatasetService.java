@@ -1,7 +1,12 @@
 package org.sse.metadataservice.service;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.sse.metadataservice.DTO.DatasetPostDTO;
+import org.sse.metadataservice.client.DatasetServiceClient;
+import org.sse.metadataservice.client.UserServiceClient;
 import org.sse.metadataservice.mapper.DatasetMapper;
 import org.sse.metadataservice.model.Dataset;
 
@@ -15,6 +20,12 @@ public class DatasetService {
 
     @Autowired
     DatasetMapper datasetMapper;
+
+    @Autowired
+    UserServiceClient userServiceClient;
+
+    @Autowired
+    DatasetServiceClient datasetServiceClient;
 
     public List<Dataset> getAllDatasetByUsername(String username) {
         return datasetMapper.getAllDatasetByUsername(username);
@@ -52,5 +63,15 @@ public class DatasetService {
         } else {
             return 0;
         }
+    }
+
+    public PageInfo<DatasetPostDTO> getDatasetPostByString(String keyword, int pageNum, int pageSize){
+        PageHelper.startPage(pageNum, pageSize);
+        List<DatasetPostDTO> datasetPostDTOList = datasetMapper.selectDatasetByKeyword(keyword);
+        for (DatasetPostDTO dto: datasetPostDTOList) {
+            dto.setAvatarUrl(userServiceClient.getUserAvatarUrlByUsername(dto.getUsername()));
+            dto.setCommentNum(datasetServiceClient.getCommentNumByDatasetId(dto.getDatasetId()));
+        }
+        return new PageInfo<>(datasetPostDTOList);
     }
 }

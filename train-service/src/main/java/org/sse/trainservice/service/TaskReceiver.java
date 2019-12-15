@@ -1,6 +1,5 @@
 package org.sse.trainservice.service;
 
-import org.apache.spark.ml.Model;
 import org.apache.spark.ml.Pipeline;
 import org.apache.spark.ml.PipelineModel;
 import org.apache.spark.sql.Dataset;
@@ -10,11 +9,12 @@ import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.sse.trainservice.client.MedataServiceClient;
 import org.sse.trainservice.configuration.RabbitConfig;
-import org.sse.trainservice.service.MailService;
+import org.sse.trainservice.domain.Model;
+import org.sse.trainservice.domain.History;
 import org.sse.trainservice.websocket.WebSocketSever;
 
-import javax.xml.crypto.Data;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,6 +34,8 @@ public class TaskReceiver {
     WebSocketSever webSocketSever;
     @Autowired
     RabbitTemplate rabbitTemplate;
+    @Autowired
+    MedataServiceClient medataServiceClient;
 
     public TaskReceiver(String instanceName){
         this.instanceName=instanceName;
@@ -43,20 +45,47 @@ public class TaskReceiver {
     public void train(Map<String,String> map){
 
         try {
+            try {
+                WebSocketSever.get(map.get("username")).sendMessage(map.get("historyId")+":running");
+            }
+            catch (Exception e){
+
+            }
+            Long historyId=Long.valueOf(map.get("historyId"));
+            Long modelId=Long.valueOf(map.get("modelId"));
+            medataServiceClient.setHistory(historyId,2);
             SparkSession spark=SparkSession.builder().appName(map.get("pipelineId")).master("local").getOrCreate();
             Dataset<Row> dataset=spark.read().option("inferSchema", true).option("header", true).csv("dataset/test.csv");//+map.get("fileId")+".csv");
-            Pipeline pipeline= Pipeline.load("pipeline/"+map.get("userId")+"/"+map.get("pipelineId"));
+            Pipeline pipeline= Pipeline.load("pipeline/"+map.get("username")+"/"+map.get("pipelineName"));
             PipelineModel model=pipeline.fit(dataset);
-            model.write().overwrite().save("model/"+map.get("userId")+"/"+map.get("pipelineId"));
+            model.write().overwrite().save("model/"+map.get("username")+"/"+modelId);
             spark.stop();
+            medataServiceClient.setHistory(historyId,3);
+            medataServiceClient.setEndTime(historyId);
+            try {
+                WebSocketSever.get(map.get("username")).sendMessage(map.get("historyId")+":complete");
+            }
+            catch (Exception e){
+            }
 
         }catch (Exception e){
-            e.printStackTrace();
+            medataServiceClient.setHistory(Long.valueOf(map.get("historyId")),4);
+            medataServiceClient.setEndTime(Long.valueOf(map.get("historyId")));
+            try {
+                WebSocketSever.get(map.get("username")).sendMessage(map.get("historyId")+":fail");
+            }
+            catch (Exception e2){
+            }
+            Map<String,String> rmap=new HashMap<String, String>();
+            rmap.put("to","caiyiyang1998@126.com");
+            rmap.put("subject","任务训练失败："+map.get("historyId").toString());
+            rmap.put("content","任务训练失败："+map.get("historyId").toString());
+            rabbitTemplate.convertAndSend(RabbitConfig.RESULT_EXCHANGE_NAME, RabbitConfig.RESULT_ROUTING_NAME,rmap);
         }
         Map<String,String> rmap=new HashMap<String, String>();
         rmap.put("to","caiyiyang1998@126.com");
-        rmap.put("subject","已完成任务训练："+map.get("pipelineId"));
-        rmap.put("content","已完成任务训练："+map.get("pipelineId"));
+        rmap.put("subject","已完成任务训练："+map.get("historyId").toString());
+        rmap.put("content","已完成任务训练："+map.get("historyId").toString());
         rabbitTemplate.convertAndSend(RabbitConfig.RESULT_EXCHANGE_NAME, RabbitConfig.RESULT_ROUTING_NAME,rmap);
     }
 

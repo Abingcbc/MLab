@@ -63,6 +63,9 @@ public interface UserMapper {
      * @param avatarUrl new avatar url
      * @return number of affected rows
      */
+    @Update("update user\n" +
+            "set avatar_url = #{avatarUrl}\n" +
+            "where username = #{username}\n")
     int updateAvatar(@Param("username") String username,
                      @Param("avatarUrl") String avatarUrl);
 }

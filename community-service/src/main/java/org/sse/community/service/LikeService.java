@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.sse.community.dto.LikeDTO;
+import org.sse.community.dto.PostDTO;
 import org.sse.community.mapper.CommentMapper;
 import org.sse.community.mapper.LikeMapper;
 import org.sse.community.mapper.PostMapper;
@@ -33,7 +34,7 @@ public class LikeService {
      */
     @Transactional(rollbackFor = Exception.class)
     public boolean setLikeOnPost(LikeDTO likeDTO) {
-        Post post = postMapper.getPostByPostId(likeDTO.getTypeId());
+        PostDTO post = postMapper.getPostByPostId(likeDTO.getTypeId());
         String username = likeDTO.getUsername();
         String likedUsername = likeDTO.getLikedUsername();
         long type=likeDTO.getType();
@@ -71,7 +72,7 @@ public class LikeService {
         long postId = likeDTO.getTypeId();
         long type = likeDTO.getType();
 
-        Post post = postMapper.getPostByPostId(postId);
+        PostDTO post = postMapper.getPostByPostId(postId);
         if(post==null||post.getStatus()!=0){
             return false;
         }

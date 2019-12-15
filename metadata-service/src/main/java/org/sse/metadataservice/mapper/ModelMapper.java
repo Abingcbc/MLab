@@ -18,7 +18,7 @@ public interface ModelMapper {
      * @param username username
      * @return list of all models
      */
-    @Select("select * from model where username = #{username};")
+    @Select("select * from model where username = #{username} and status = 0;")
     List<Model> getAllModelByUsername(@Param(value = "username") String username);
 
     /**
@@ -29,7 +29,7 @@ public interface ModelMapper {
     @Insert("insert into model(username, model_name, description, " +
             "create_time, status)\n" +
             "values (#{username}, #{modelName}, #{description}," +
-            "NOW(), 1);")
+            "NOW(), 0);")
     @Options(useGeneratedKeys = true, keyProperty = "modelId")
     int createNewModel(Model model);
 
@@ -38,7 +38,7 @@ public interface ModelMapper {
      * @param modelId model id
      * @return object of model
      */
-    @Select("select * from model where model_id = #{modelId}")
+    @Select("select * from model where model_id = #{modelId} and status = 0")
     Model getModelById(@Param("modelId") Long modelId);
 
     /**
@@ -46,7 +46,7 @@ public interface ModelMapper {
      * @param modelId model id
      */
     @Update(value = "update model\n" +
-            "set status = 0\n" +
+            "set status = 1\n" +
             "where model_id = #{modelId}\n")
     void deleteModelById(@Param("modelId") Long modelId);
 }

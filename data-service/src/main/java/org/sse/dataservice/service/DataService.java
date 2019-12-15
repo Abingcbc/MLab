@@ -86,22 +86,22 @@ public class DataService {
         }
     }
 
-    public Boolean checkIsChunkExisted(Long datasetId, String identifier) {
-        return redisTemplate.opsForSet().isMember(String.valueOf(datasetId), identifier);
+    public Boolean checkIsChunkExisted(Chunk chunk) {
+        return redisTemplate.opsForSet().isMember(String.valueOf(chunk.getIdentifier()), String.valueOf(chunk.getChunkNumber()));
     }
 
     public int saveChunk(Chunk chunk) {
         FileSystem fileSystem = null;
         try {
-            if (!checkIsChunkExisted(chunk.getDatasetId(), chunk.getIdentifier())) {
+            if (!checkIsChunkExisted(chunk)) {
                 fileSystem = FileSystem.get(configuration);
                 File file = multiPartFileToFile(chunk.getFile());
                 Path srcPath = new Path(file.getPath());
-                Path dstPath = new Path(folderPath+"/tmp/"+chunk.getChunkNumber()+chunk.getDatasetId()+".tmp");
+                Path dstPath = new Path(folderPath+"/tmp/"+chunk.getChunkNumber()+chunk.getIdentifier()+".tmp");
                 fileSystem.copyFromLocalFile(srcPath, dstPath);
-                redisTemplate.opsForSet().add(String.valueOf(chunk.getDatasetId()), chunk.getIdentifier());
-                redisTemplate.expire(String.valueOf(chunk.getDatasetId()), 60, TimeUnit.MINUTES);
-                return file.delete() ? 1 : -1;
+                redisTemplate.opsForSet().add(String.valueOf(chunk.getIdentifier()), String.valueOf(chunk.getChunkNumber()));
+                redisTemplate.expire(String.valueOf(chunk.getIdentifier()), 60, TimeUnit.MINUTES);
+                return 1;
             } else {
                 return 0;
             }
@@ -113,7 +113,7 @@ public class DataService {
         }
     }
 
-    public int merge(Long datasetId) {
+    public int merge(Long datasetId, Long totalChunkNum) {
         FileSystem fileSystem = null;
         FSDataOutputStream outputStream = null;
         Dataset dataset = metadataServiceClient.getDatasetById(datasetId);
@@ -126,10 +126,10 @@ public class DataService {
                 outputStream = fileSystem.create(
                         new Path(folderPath+"/"+String.valueOf(datasetId)+"."+dataset.getFormat()), true);
                 Long totalNum = redisTemplate.opsForSet().size(String.valueOf(datasetId));
-                if (totalNum == null) {
+                if (!totalChunkNum.equals(totalNum)) {
                     return -1;
                 }
-                for (int i = 0; i < totalNum; i++) {
+                for (int i = 1; i <= totalNum; i++) {
                     Path tempPath = new Path(folderPath+"/tmp/"+ i + datasetId +".tmp");
                     FSDataInputStream inputStream = fileSystem.open(tempPath);
                     // Here we can't directly use `copyBytes` to close stream

@@ -6,10 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.sse.community.mapper.CommentMapper;
-import org.sse.community.mapper.LikeMapper;
-import org.sse.community.mapper.PostMapper;
-import org.sse.community.mapper.ReplyMapper;
+import org.sse.community.dto.CommentDTO;
+import org.sse.community.mapper.*;
 import org.sse.community.model.Comment;
 import org.sse.community.model.Post;
 
@@ -28,18 +26,22 @@ public class CommentService {
     LikeMapper likeMapper;
     @Autowired
     ReplyMapper replyMapper;
+    @Autowired
+    UserMapper userMapper;
 
     @Transactional(rollbackFor = Exception.class)
-    public boolean postComment(Comment comment){
+    public long postComment(Comment comment){
         if(postMapper.getPostByPostId(comment.getPostId())==null){
-            return false;
+            return 0;
         }
         else if(postMapper.checkStatus(comment.getPostId())==1) {
-            return false;
+            return 0;
         }
         else {
             postMapper.addCommentNum(comment.getPostId());
-            return commentMapper.insertIntoComment(comment.getPostId(),comment.getUsername(),comment.getContent());
+            commentMapper.insertIntoComment(comment);
+            long id = comment.getCommentId();
+            return id;
         }
     }
 
@@ -56,10 +58,14 @@ public class CommentService {
         }
     }
 
-    public PageInfo<Comment> getCommentsByPostId(long postId, int pageNum, int pageSize) {
+    public PageInfo<CommentDTO> getCommentsByPostId(long postId, int pageNum, int pageSize) {
         PageHelper.startPage(pageNum,pageSize);
-        List<Comment> list = commentMapper.getCommentsByPostId(postId);
-        return new PageInfo<>(list);
+        List<CommentDTO> commentDTOList = commentMapper.getCommentsByPostId(postId);
+        for(CommentDTO c : commentDTOList) {
+            String url = userMapper.getAvatarUrl(c.getUsername());
+            c.setAvatarUrl(url);
+        }
+        return new PageInfo<>(commentDTOList);
     }
 
     @Transactional(rollbackFor = Exception.class)
