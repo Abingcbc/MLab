@@ -12,11 +12,12 @@
             console.log("您的浏览器不支持WebSocket");
         }else{
             console.log("您的浏览器支持WebSocket");
-            var socketUrl="http://localhost:8080/api/websocket/"+$("#userId").val();
-            socketUrl=socketUrl.replace("https","ws").replace("http","ws");
+            var token="472ff636-9af4-43eb-a673-38e35129bc73";
+            var socketUrl="ws://localhost:8087/websocket/"+$("#userId").val();
+            //socketUrl=socketUrl.replace("https","ws").replace("http","ws");
             console.log(socketUrl)
-            socket = new WebSocket(socketUrl);
-            //打开事件
+            socket = new WebSocket(socketUrl,[]);
+
 
                 socket.onopen = function () {
                     console.log("websocket已打开");

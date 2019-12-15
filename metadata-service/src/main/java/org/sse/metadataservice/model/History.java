@@ -9,7 +9,7 @@ import lombok.Data;
 @Data
 public class History {
 
-  private long trainId;
+  private long historyId;
   private long runType;
   private String username;
   private long pipelineId;
@@ -17,5 +17,6 @@ public class History {
   private java.sql.Timestamp startTime;
   private java.sql.Timestamp endTime;
   private long status;
+
 
 }

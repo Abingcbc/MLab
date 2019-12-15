@@ -26,7 +26,7 @@ public class HistoryService {
 
     public Long createNewHistory(History history) {
         if (historyMapper.createNewHistory(history) == 1) {
-            return history.getModelId();
+            return history.getHistoryId();
         } else {
             return (long) -1;
         }
@@ -40,4 +40,7 @@ public class HistoryService {
         historyMapper.deleteHistoryById(historyId);
     }
 
+    public void setHistory(Long historyId,Integer status){historyMapper.setHistoryById(historyId,status);}
+
+    public void setEndTime(Long historyId){historyMapper.setEndTime(historyId);}
 }

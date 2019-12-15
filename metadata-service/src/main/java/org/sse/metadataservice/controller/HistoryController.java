@@ -15,10 +15,10 @@ import java.util.List;
  */
 @RestController
 public class HistoryController {
-    
+
     @Autowired
     HistoryService historyService;
-    
+
     @GetMapping(value = "/train/{username}")
     public List<History> getAllTrainByUsername(@PathVariable String username) {
         return historyService.getAllTrainByUsername(username);
@@ -35,19 +35,25 @@ public class HistoryController {
     }
 
     @PostMapping(value = "/history")
-    public ResponseEntity<Result> createNewHistory(@RequestBody History history) {
+    public long createNewHistory(@RequestBody History history) {
         Long historyId = historyService.createNewHistory(history);
-        if (historyId > 0) {
-            return new ResponseEntity<>(new Result(String.valueOf(historyId)),
-                    HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return  historyId;
+
     }
 
     @PostMapping(value = "/history_delete")
     public void deleteHistory(@RequestBody Long historyId) {
         historyService.deleteHistory(historyId);
+    }
+
+    @GetMapping(value = "/history_status/{historyId}/{status}")
+    public void setHistory(@PathVariable Long historyId, @PathVariable Integer status) {
+        historyService.setHistory(historyId,status);
+    }
+
+    @GetMapping(value = "/history/{historyId}")
+    public void setEndTime(@PathVariable Long historyId){
+        historyService.setEndTime(historyId);
     }
 
 }

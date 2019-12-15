@@ -6,9 +6,9 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.sse.trainservice.domain.PredictReceiver;
-import org.sse.trainservice.domain.ResultReceiver;
-import org.sse.trainservice.domain.TaskReceiver;
+import org.sse.trainservice.service.PredictReceiver;
+import org.sse.trainservice.service.ResultReceiver;
+import org.sse.trainservice.service.TaskReceiver;
 
 /**
  * @version: 1.0
@@ -77,20 +77,24 @@ public class RabbitConfig {
     @Bean
     public TaskReceiver taskReceiver1(){return new TaskReceiver("1");}
 
+    /**
     @Bean
     public TaskReceiver taskReceiver2(){return new TaskReceiver("2");}
 
     @Bean
     public TaskReceiver taskReceiver3(){return new TaskReceiver("3");}
+     **/
 
     @Bean
     public PredictReceiver predictReceiver1(){return new PredictReceiver("1");}
 
+    /**
     @Bean
     public PredictReceiver predictReceiver2(){return new PredictReceiver("2");}
 
     @Bean
     public PredictReceiver predictReceiver3(){return new PredictReceiver("3");}
+     **/
 
     @Bean
     public ResultReceiver resultReceiver(){return new ResultReceiver();}

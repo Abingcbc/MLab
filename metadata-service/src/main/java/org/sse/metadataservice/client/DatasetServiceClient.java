@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 /**
  * @author cbc
  */
-@FeignClient
+@FeignClient(name = "dataset-service")
 public interface DatasetServiceClient {
 
     /**

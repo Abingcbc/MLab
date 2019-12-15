@@ -16,7 +16,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <!--<spring-cloud.version>Hoxton.RC2</spring-cloud.version>-->
+        <spring-cloud.version>Hoxton.RC2</spring-cloud.version>
     </properties>
 
     <dependencies>
@@ -36,6 +36,11 @@
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>14.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
         <dependency>
@@ -115,7 +120,6 @@
             <artifactId>spark-mllib_2.12</artifactId>
             <version>2.4.4</version>
         </dependency>
-        <!--
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
@@ -146,9 +150,7 @@
             <version>2.2.0.RC2</version>
             <scope>compile</scope>
         </dependency>
-        -->
     </dependencies>
-    <!--
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -160,7 +162,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-    -->
     <build>
         <plugins>
             <plugin>
@@ -169,7 +170,6 @@
             </plugin>
         </plugins>
     </build>
-    <!--
     <repositories>
         <repository>
             <id>spring-milestones</id>
@@ -177,5 +177,4 @@
             <url>https://repo.spring.io/milestone</url>
         </repository>
     </repositories>
-    -->
 </project>

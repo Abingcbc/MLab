@@ -1,4 +1,4 @@
-package org.sse.trainservice.domain;
+package org.sse.trainservice.service;
 
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;

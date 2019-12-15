@@ -30,6 +30,8 @@ public class GatewayApplication {
     @Component
     @Primary
     @EnableAutoConfiguration
+    @EnableWebSocketMessageBroker
+    @EnableZuulWebSocket
     class DocumentationConfig implements SwaggerResourcesProvider {
         @Override
         public List<SwaggerResource> get() {

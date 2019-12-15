@@ -1,4 +1,4 @@
-package org.sse.trainservice.domain;
+package org.sse.trainservice.service;
 
 import org.apache.spark.ml.Pipeline;
 import org.apache.spark.ml.PipelineModel;
@@ -39,12 +39,33 @@ public class PredictReceiver {
     public void predict(Map<String,String> map){
 
         try {
+            try {
+                WebSocketSever.get(map.get("username")).sendMessage(map.get("historyId")+":running");
+            }
+            catch (Exception e){
+
+            }
             SparkSession spark=SparkSession.builder().appName(map.get("pipelineId")).master("local").getOrCreate();
             Dataset<Row> dataset=spark.read().option("inferSchema", true).option("header", true).csv("dataset/"+map.get("fileId")+".csv");
             PipelineModel model= PipelineModel.load("model/"+map.get("userId")+"/"+map.get("pipelineId"));
             Dataset<Row> predictions = model.transform(dataset);
             predictions.select("id","text","prediction").write().format("csv").option("header",true).save("predictions/"+map.get("pipelineId"));
             spark.stop();
+            try {
+                WebSocketSever.get(map.get("username")).sendMessage(map.get("historyId")+":complete");
+            }
+            catch (Exception e){
+                try {
+                    WebSocketSever.get(map.get("username")).sendMessage(map.get("historyId")+":fail");
+                }
+                catch (Exception e2){
+                }
+                Map<String,String> rmap=new HashMap<String, String>();
+                rmap.put("to","caiyiyang1998@126.com");
+                rmap.put("subject","预测任务失败："+map.get("historyId").toString());
+                rmap.put("content","预测任务失败："+map.get("historyId").toString());
+                rabbitTemplate.convertAndSend(RabbitConfig.RESULT_EXCHANGE_NAME, RabbitConfig.RESULT_ROUTING_NAME,rmap);
+            }
 
         }catch (Exception e){
             e.printStackTrace();

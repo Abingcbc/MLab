@@ -1,6 +1,7 @@
 package org.sse.modelservice.controller;
 
 import org.sse.modelservice.domain.model.Graph;
+import org.sse.modelservice.service.DownloadService;
 import org.sse.modelservice.service.ModelService;
 import org.springframework.http.ResponseEntity;
 import com.alibaba.fastjson.JSONObject;
@@ -28,25 +29,28 @@ public class ModelController {
     @Autowired
     ModelService modelService;
 
+    @Autowired
+    DownloadService downloadService;
+
     @RequestMapping(value = "/generate/{username}/{pipelineName}", method = RequestMethod.POST)
     public String generate(@RequestBody JSONObject jsonObject,@PathVariable String username,@PathVariable String pipelineName,@RequestParam(name = "description") String description) {
         return modelService.setModel(jsonObject,username,pipelineName,description);
     }
 
     @RequestMapping(value = "/edit/{pipelineId}", method = RequestMethod.GET)
-    public Graph view(@PathVariable String pipelineId) {
-        return modelService.editModel(pipelineId);
+    public Graph edit(@PathVariable String pipelineId) {
+        return modelService.editPipeline(pipelineId);
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-    public Boolean delete(@RequestParam(name="id") Integer id){return modelService.deleteModel(id);}
+    @RequestMapping(value = "/delete/{userId}/{fileType}/{fileId}", method = RequestMethod.GET)
+    public int delete(@PathVariable long userId,@PathVariable String fileType,@PathVariable long fileId){return modelService.deleteFile(userId,fileType,fileId);}
 
-    @RequestMapping(value = "/download/{userId}/{pipelineId}.zip", method = RequestMethod.GET)
-    public void download(HttpServletResponse response, @PathVariable String userId, @PathVariable String pipelineId) {
+    @RequestMapping(value = "/download/{username}/{fileType}/{filename}.{format}", method = RequestMethod.GET)
+    public void download(HttpServletResponse response, @PathVariable String username, @PathVariable String fileType,@PathVariable String filename,@PathVariable String format) {
         response.setHeader("content-type", "application/octet-stream");
         response.setContentType("application/octet-stream");
         try {
-            if (modelService.download(userId, pipelineId,response) == 1) {
+            if (downloadService.download(username,fileType, filename,format,response) == 1) {
                 response.setStatus(HttpServletResponse.SC_OK);
             } else {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);

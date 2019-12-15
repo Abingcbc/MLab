@@ -11,10 +11,10 @@ import lombok.Data;
  * @data: 2019-12-09 12:53
  **/
 @Data
-public class Response {
+public class Result {
     private String msg;
 
-    public Response(String msg) {
+    public Result(String msg) {
         this.msg = msg;
     }
 }
