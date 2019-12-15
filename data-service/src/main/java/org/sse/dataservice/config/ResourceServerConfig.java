@@ -41,6 +41,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .antMatchers("/download/{fileId}/{format}")
                 .access("@userSecurityService.checkDownloadPermission(authentication, #fileId)")
                 .antMatchers("/v2/**")
+                .permitAll()
+                .anyRequest()
                 .permitAll();
     }
 

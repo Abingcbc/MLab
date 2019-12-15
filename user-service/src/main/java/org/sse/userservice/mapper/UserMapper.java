@@ -27,7 +27,8 @@ public interface UserMapper {
      * @param avatarUrl avatar url
      * @return number of affected rows
      */
-    @Insert("insert into user values(#{username}, #{password}, #{email}, #{avatarUrl});")
+    @Insert("insert into user(username, password, email, avatar_url, like_num)" +
+            " values(#{username}, #{password}, #{email}, #{avatarUrl}, 0);")
     int createNewUser(@Param("username") String username,
                       @Param("password") String password,
                       @Param("email") String email,

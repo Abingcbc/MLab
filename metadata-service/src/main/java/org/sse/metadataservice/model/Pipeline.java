@@ -14,6 +14,7 @@ public class Pipeline {
   private String pipelineName;
   private String description;
   private java.sql.Timestamp createTime;
+  private long inputFile;
   private long status;
 
 }

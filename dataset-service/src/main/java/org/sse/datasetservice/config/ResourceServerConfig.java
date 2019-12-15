@@ -37,9 +37,11 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().anyRequest()
-//                .antMatchers("/v2/**")
-                .permitAll();
+        http.authorizeRequests()
+                .antMatchers("/v2/**")
+                .permitAll()
+                .anyRequest()
+                .authenticated();
     }
 
     @Bean
@@ -48,11 +50,11 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         return new ClientCredentialsResourceDetails();
     }
 
-//    @Bean
-//    public RequestInterceptor feignOauthInterceptor() {
-//        return new OAuth2FeignRequestInterceptor(
-//                new DefaultOAuth2ClientContext(),
-//                clientCredentialsResourceDetails());
-//    }
+    @Bean
+    public RequestInterceptor feignOauthInterceptor() {
+        return new OAuth2FeignRequestInterceptor(
+                new DefaultOAuth2ClientContext(),
+                clientCredentialsResourceDetails());
+    }
 
 }

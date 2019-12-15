@@ -52,6 +52,9 @@ public class ModelService {
             if(node.getConfig().getType()=="Input"){
                 InputNodeConfig config=(InputNodeConfig) node.getConfig();
                 inputFile=config.getFileName();
+                System.out.println(inputFile);
+                long fileId=Long.valueOf(inputFile.split("\\.")[0]);
+                model.getPipelineInformation().setInputFile(fileId);
             }
             model.addNode(node);
         }

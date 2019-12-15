@@ -1,8 +1,9 @@
 package org.sse.modelservice;
 
+//import com.spring4all.swagger.EnableSwagger2Doc;
+import com.spring4all.swagger.EnableSwagger2Doc;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.scheduling.annotation.EnableAsync;
 
@@ -27,6 +28,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableFeignClients
 @EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
 @EnableResourceServer
+@EnableSwagger2Doc
 public class ModelServiceApplication {
     public static void main(String[] args) {
         SpringApplication.run(ModelServiceApplication.class, args);

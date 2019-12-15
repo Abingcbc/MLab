@@ -27,9 +27,9 @@ public interface PipelineMapper {
      * @return num of affected row
      */
     @Insert("insert into pipeline(username, pipeline_name, " +
-            "description, create_time, status) \n" +
+            "description, create_time,input_file status) \n" +
             "values (#{username}, #{pipelineName}, #{description}," +
-            "NOW(), 0);")
+            "NOW(),#{inputFile} ,0);")
     @Options(useGeneratedKeys = true, keyProperty = "pipelineId")
     int createNewPipeline(Pipeline pipeline);
 
