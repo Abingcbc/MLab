@@ -24,7 +24,7 @@ public class DReplyController {
         Result result = new Result();
         result.setCode(0);
         result.setMsg("success");
-        result.setData(dReplyService.insertReplyByCommentId(dReply.getUsername(),dReply.getDCommentId(),dReply.getContent()));
+        result.setData(dReplyService.insertReplyByCommentId(dReply));
         return result;
     }
 

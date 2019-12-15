@@ -1,6 +1,8 @@
 package org.sse.metadataservice.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,14 +13,16 @@ import org.sse.metadataservice.model.Dataset;
 import org.sse.metadataservice.model.Result;
 import org.sse.metadataservice.service.DatasetService;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
  * @author cbc
  */
 @RestController
+@Slf4j
 public class DatasetController {
-    
+
     @Autowired
     DatasetService datasetService;
 
@@ -37,14 +41,21 @@ public class DatasetController {
         return datasetService.checkDatasetOwner(username, datasetId);
     }
 
-    @GetMapping(value = "/dataset/{username}")
-    public List<Dataset> getAllDatasetByUsername(@PathVariable String username) {
-        return datasetService.getAllDatasetByUsername(username);
+    @GetMapping(value = "/dataset/{username}/{pageNum}/{pageSize}")
+    public PageInfo<Dataset> getDatasetPageByUsername(@PathVariable String username,
+                                                  @PathVariable int pageNum,
+                                                  @PathVariable int pageSize) {
+        return datasetService.getPageDatasetByUsername(username, pageNum, pageSize);
     }
 
     @GetMapping(value = "/datasetId/{datasetId}")
     public Dataset getDatasetById(@PathVariable Long datasetId) {
         return datasetService.getDatasetById(datasetId);
+    }
+
+    @GetMapping(value = "/datasetPostId/{datasetId}")
+    public DatasetPostDTO getDatasetPostById(@PathVariable Long datasetId) {
+        return datasetService.getDatasetPostById(datasetId);
     }
 
     @PostMapping(value = "/dataset")
@@ -59,8 +70,12 @@ public class DatasetController {
     }
 
     @PostMapping(value = "/dataset_delete")
-    public void deleteDataset(@RequestBody Long datasetId) {
-        datasetService.updateDatasetStatus(datasetId, 0);
+    public void deleteDataset(@RequestBody JSONObject jsonObject, HttpServletResponse response) {
+        if (datasetService.updateDatasetStatus(jsonObject.getLong("deleteId"), 1) == 1) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            response.setStatus(HttpServletResponse.SC_ACCEPTED);
+        }
     }
 
     @PostMapping(value = "/dataset_enable")
@@ -68,11 +83,22 @@ public class DatasetController {
         datasetService.updateDatasetStatus(datasetId, 1);
     }
 
-    @GetMapping(value = "/dataset/{keyWord}/{pageNum}/{pageSize}")
-    public PageInfo<DatasetPostDTO> getAllDataset(@PathVariable String keyWord,
+    @GetMapping(value = "/dataset_search/{keyWord}/{pageNum}/{pageSize}")
+    public PageInfo<DatasetPostDTO> getAllDatasetByKeyword(@PathVariable String keyWord,
                                                   @PathVariable int pageNum,
                                                   @PathVariable int pageSize) {
         return datasetService.getDatasetPostByString(keyWord, pageNum, pageSize);
     }
 
+    @GetMapping(value = "/dataset_search/{pageNum}/{pageSize}")
+    public PageInfo<DatasetPostDTO> getAllDataset(@PathVariable int pageNum,
+                                                  @PathVariable int pageSize) {
+        return datasetService.getAllDatasetPost(pageNum, pageSize);
+    }
+
+    @PostMapping(value = "/edit_dataset")
+    public  boolean updateDatasetDesAndPul(@RequestBody Dataset dataset){
+        log.warn(dataset.toString());
+        return  datasetService.updateDatasetDesAndPul(dataset.getDatasetId(),dataset.getIsPublic(), dataset.getDescription());
+    }
 }

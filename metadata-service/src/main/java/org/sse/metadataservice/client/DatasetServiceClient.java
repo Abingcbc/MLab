@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 /**
  * @author cbc
  */
-@FeignClient
+@FeignClient(name = "dataset-service")
 public interface DatasetServiceClient {
 
     /**
@@ -16,5 +16,5 @@ public interface DatasetServiceClient {
      * @return comment num
      */
     @GetMapping("/commentNum/{datasetId}")
-    int getCommentNumByDatasetId(@PathVariable Long datasetId);
+    int getCommentNumByDatasetId(@PathVariable("datasetId") Long datasetId);
 }

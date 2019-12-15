@@ -2,6 +2,7 @@ package org.sse.metadataservice.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.sse.metadataservice.DTO.DatasetPostDTO;
@@ -16,6 +17,7 @@ import java.util.List;
  * @author cbc
  */
 @Service
+@Slf4j
 public class DatasetService {
 
     @Autowired
@@ -27,8 +29,10 @@ public class DatasetService {
     @Autowired
     DatasetServiceClient datasetServiceClient;
 
-    public List<Dataset> getAllDatasetByUsername(String username) {
-        return datasetMapper.getAllDatasetByUsername(username);
+    public PageInfo<Dataset> getPageDatasetByUsername(String username, int pageNum, int pageSize) {
+        PageHelper.startPage(pageNum, pageSize);
+        List<Dataset> datasetList = datasetMapper.getAllDatasetByUsername(username);
+        return new PageInfo<>(datasetList);
     }
 
     public Long createNewDataset(Dataset dataset) {
@@ -43,8 +47,17 @@ public class DatasetService {
         return datasetMapper.getDatasetById(datasetId);
     }
 
-    public void updateDatasetStatus(Long datasetId, Integer status) {
-        datasetMapper.updateDatasetStatusById(datasetId, status);
+    public DatasetPostDTO getDatasetPostById(Long datasetId) {
+        DatasetPostDTO datasetPostDTO = datasetMapper.getDatasetPostById(datasetId);
+        datasetPostDTO.setAvatarUrl(userServiceClient.getUserAvatarUrlByUsername(datasetPostDTO.getUsername()));
+        datasetPostDTO.setCommentNum(datasetServiceClient.getCommentNumByDatasetId(datasetPostDTO.getDatasetId()));
+        return datasetPostDTO;
+    }
+
+    public int updateDatasetStatus(Long datasetId, Integer status) {
+        int s = datasetMapper.updateDatasetStatusById(datasetId, status);
+        log.warn(String.valueOf(s));
+        return s;
     }
 
     public int getDatasetPermission(String username, Long datasetId) {
@@ -67,11 +80,26 @@ public class DatasetService {
 
     public PageInfo<DatasetPostDTO> getDatasetPostByString(String keyword, int pageNum, int pageSize){
         PageHelper.startPage(pageNum, pageSize);
+        keyword = "%" + keyword + "%";
         List<DatasetPostDTO> datasetPostDTOList = datasetMapper.selectDatasetByKeyword(keyword);
         for (DatasetPostDTO dto: datasetPostDTOList) {
             dto.setAvatarUrl(userServiceClient.getUserAvatarUrlByUsername(dto.getUsername()));
             dto.setCommentNum(datasetServiceClient.getCommentNumByDatasetId(dto.getDatasetId()));
         }
         return new PageInfo<>(datasetPostDTOList);
+    }
+
+    public PageInfo<DatasetPostDTO> getAllDatasetPost(int pageNum, int pageSize){
+        PageHelper.startPage(pageNum, pageSize);
+        List<DatasetPostDTO> datasetPostDTOList = datasetMapper.selectAllDataset();
+        for (DatasetPostDTO dto: datasetPostDTOList) {
+            dto.setAvatarUrl(userServiceClient.getUserAvatarUrlByUsername(dto.getUsername()));
+            dto.setCommentNum(datasetServiceClient.getCommentNumByDatasetId(dto.getDatasetId()));
+        }
+        return new PageInfo<>(datasetPostDTOList);
+    }
+
+    public boolean updateDatasetDesAndPul(Long datasetId, Long isPublic, String description){
+        return  datasetMapper.updateDatasetDesAndPul(datasetId,isPublic,description);
     }
 }
