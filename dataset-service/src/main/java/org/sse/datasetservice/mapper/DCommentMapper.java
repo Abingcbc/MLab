@@ -1,5 +1,6 @@
 package org.sse.datasetservice.mapper;
 
+import org.sse.datasetservice.dto.DCommentDto;
 import org.sse.datasetservice.model.DComment;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
@@ -19,17 +20,22 @@ public interface DCommentMapper {
      */
     @Select("select * " +
             "from d_comment " +
-            "where dataset_id = #{datasetId}")
-    List<DComment> getCommentByDatasetId(@Param("datasetId")long datasetId);
+            "where dataset_id = #{datasetId} " +
+            "order by d_comment_id desc ")
+    List<DCommentDto> getCommentByDatasetId(@Param("datasetId")Long datasetId);
+
+    @Update("update d_comment " +
+            "set reply_num = reply_num + 1 " +
+            "where d_comment_id = #{dCommentId}")
+    boolean updateDCommentReplyNum(@Param("dCommentId")Long dCommentId);
 
     /**
      * insert a comment
-     * @param datasetId identifier of dataset
-     * @param username user name
-     * @param content the content of comment
+     * @param comment the class of comment
      * @return insert successfully or not
      */
     @Insert("insert into d_comment(dataset_id,username,content,create_time,`status`,reply_num,like_num) " +
             "values(#{datasetId},#{myUsername},#{myContent},now(),0,0,0)")
-    boolean insertCommentByDatasetId(@Param("datasetId")long datasetId,@Param("myUsername")String username,@Param("myContent")String content);
+    @Options(useGeneratedKeys = true, keyProperty = "dCommentId",keyColumn = "d_comment_id")
+    boolean insertCommentByDatasetId(DComment comment);
 }

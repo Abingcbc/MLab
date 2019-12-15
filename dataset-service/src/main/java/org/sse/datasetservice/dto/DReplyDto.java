@@ -15,14 +15,4 @@ public class DReplyDto {
     private java.sql.Timestamp createTime;
     private long status;
     private String avatarUrl;
-
-    public DReplyDto(DReply dReply, String avatarUrl) {
-        this.dReplyId = dReply.getDReplyId();
-        this.username = dReply.getUsername();
-        this.dCommentId = dReply.getDCommentId();
-        this.content = dReply.getContent();
-        this.createTime = dReply.getCreateTime();
-        this.status = dReply.getStatus();
-        this.avatarUrl = avatarUrl;
-    }
 }

@@ -14,7 +14,6 @@ import java.util.List;
  * @author ZTL
  */
 @RestController
-@RequestMapping("/dComment")
 public class DCommentController {
     @Autowired
     DCommentService dCommentService;
@@ -24,7 +23,7 @@ public class DCommentController {
         Result result = new Result();
         result.setCode(0);
         result.setMsg("success");
-        result.setData(dCommentService.insertCommentByDatasetId(comment.getDatasetId(),comment.getUsername(),comment.getContent()));
+        result.setData(dCommentService.insertCommentByDatasetId(comment));
         return result;
     }
 
