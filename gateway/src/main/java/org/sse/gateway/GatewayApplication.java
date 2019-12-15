@@ -30,6 +30,8 @@ public class GatewayApplication {
     @Component
     @Primary
     @EnableAutoConfiguration
+    @EnableWebSocketMessageBroker
+    @EnableZuulWebSocket
     class DocumentationConfig implements SwaggerResourcesProvider {
         @Override
         public List<SwaggerResource> get() {
@@ -37,6 +39,10 @@ public class GatewayApplication {
             resources.add(swaggerResource("data-service", "/data-service/v2/api-docs", "1.0"));
             resources.add(swaggerResource("user-service", "/user-service/v2/api-docs", "1.0"));
             resources.add(swaggerResource("metadata-service", "/metadata-service/v2/api-docs", "1.0"));
+            resources.add(swaggerResource("community-service", "/community-service/v2/api-docs", "1.0"));
+            resources.add(swaggerResource("dataset-service", "/dataset-service/v2/api-docs", "1.0"));
+            resources.add(swaggerResource("model-service", "/model-service/v2/api-docs", "1.0"));
+            resources.add(swaggerResource("train-service", "/train-service/v2/api-docs", "1.0"));
             return resources;
         }
 

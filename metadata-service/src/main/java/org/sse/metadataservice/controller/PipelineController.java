@@ -30,14 +30,9 @@ public class PipelineController {
     }
 
     @PostMapping(value = "/pipeline")
-    public ResponseEntity<Result> createNewPipeline(@RequestBody Pipeline pipeline) {
+    public long createNewPipeline(@RequestBody Pipeline pipeline) {
         Long pipelineId = pipelineService.createNewPipeline(pipeline);
-        if (pipelineId > 0) {
-            return new ResponseEntity<>(new Result(String.valueOf(pipelineId)),
-                    HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return pipelineId;
     }
 
     @PostMapping(value = "/pipeline_delete")

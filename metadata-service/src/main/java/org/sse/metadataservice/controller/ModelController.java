@@ -31,14 +31,9 @@ public class ModelController {
     }
 
     @PostMapping(value = "/model")
-    public ResponseEntity<Result> createNewModel(@RequestBody Model Model) {
+    public long createNewModel(@RequestBody Model Model) {
         Long ModelId = modelService.createNewModel(Model);
-        if (ModelId > 0) {
-            return new ResponseEntity<>(new Result(String.valueOf(ModelId)),
-                    HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        return ModelId;
     }
 
     @PostMapping(value = "/model_delete")
