@@ -64,7 +64,7 @@ public class PredictReceiver {
             SparkSession spark=SparkSession.builder().appName(map.get("modelId")).master("local").getOrCreate();
             Dataset<Row> dataset=spark.read().option("inferSchema", true).option("header", true).csv("tmp/"+map.get("fileId")+".csv");
             PipelineModel model= PipelineModel.load("model/"+map.get("username")+"/"+map.get("modelId"));
-            Dataset<Row> predictions = model.transform(dataset);
+            Dataset<Row> predictions = model.transform(dataset);gi
             predictions.select("id","prediction").write().format("csv").option("header",true).save("predictions/"+map.get("modelId"));
             spark.stop();
             try {
