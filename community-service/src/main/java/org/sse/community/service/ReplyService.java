@@ -5,6 +5,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.sse.community.dto.ReplyDTO;
 import org.sse.community.mapper.CommentMapper;
 import org.sse.community.mapper.ReplyMapper;
@@ -26,6 +27,7 @@ public class ReplyService {
     @Autowired
     UserMapper userMapper;
 
+    @Transactional(rollbackFor = Exception.class)
     public boolean insertIntoReply(Reply reply){
         Comment comment=commentMapper.getCommentById(reply.getCommentId());
         if(comment==null){
@@ -64,6 +66,7 @@ public class ReplyService {
         return pageInfo;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     public boolean deleteReply(long id) {
         Reply reply=replyMapper.getReplyByReplyId(id);
         if(reply==null){
