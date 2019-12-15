@@ -16,5 +16,5 @@ public interface DatasetServiceClient {
      * @return comment num
      */
     @GetMapping("/commentNum/{datasetId}")
-    int getCommentNumByDatasetId(@PathVariable Long datasetId);
+    int getCommentNumByDatasetId(@PathVariable("datasetId") Long datasetId);
 }

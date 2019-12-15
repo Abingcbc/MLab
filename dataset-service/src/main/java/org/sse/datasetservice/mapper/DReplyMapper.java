@@ -1,5 +1,6 @@
 package org.sse.datasetservice.mapper;
 
+import org.sse.datasetservice.dto.DReplyDto;
 import org.sse.datasetservice.model.DReply;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Component;
@@ -20,17 +21,15 @@ public interface DReplyMapper {
     @Select("select * " +
             "from d_reply " +
             "where d_comment_id = #{dCommentId}")
-    List<DReply> getReplyByCommentId(@Param("dCommentId")Long dCommentId);
+    List<DReplyDto> getReplyByCommentId(@Param("dCommentId")Long dCommentId);
 
     /**
      * insert a reply of the comment identified by d_comment_id
-     * @param username username
-     * @param dCommentId identifier of comment
-     * @param content the content of reply
-     * @return insert successfully or not
+     * @param dReply class of reply
+     * @return
      */
-    @Insert("insert into d_reply(username,d_comment_id,content,create_time,status " +
-            "values(#{myUsername},#{dCommentId},#{myContent},now(),0)")
-    boolean insertReplyByCommentId(@Param("myUsername")String username,@Param("dCommentId")long dCommentId,
-                                   @Param("myContent")String content);
+    @Insert("insert into d_reply(username,d_comment_id,content,create_time,status) " +
+            "values(#{username},#{dCommentId},#{content},now(),0)")
+    @Options(useGeneratedKeys = true, keyProperty = "dReplyId",keyColumn = "d_reply_id")
+    boolean insertReplyByCommentId(DReply dReply);
 }

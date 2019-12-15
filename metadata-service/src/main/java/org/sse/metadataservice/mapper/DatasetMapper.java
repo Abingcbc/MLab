@@ -38,8 +38,16 @@ public interface DatasetMapper {
      * @param datasetId dataset id
      * @return metadata of dataset
      */
-    @Select(value = "select * from dataset where dataset_id = #{datasetId} and status = 0")
+    @Select(value = "select * from dataset where dataset_id = #{datasetId}")
     Dataset getDatasetById(@Param(value = "datasetId") Long datasetId);
+
+    /**
+     * get dataset by dataset id
+     * @param datasetId dataset id
+     * @return metadata of dataset
+     */
+    @Select(value = "select * from dataset where dataset_id = #{datasetId} and status = 0")
+    DatasetPostDTO getDatasetPostById(@Param(value = "datasetId") Long datasetId);
 
     /**
      * delete dataset by dataset id, only set status to 1
@@ -50,7 +58,7 @@ public interface DatasetMapper {
     @Update(value = "update dataset\n" +
             "set status = #{status}\n" +
             "where dataset_id = #{datasetId}\n")
-    void updateDatasetStatusById(@Param(value = "datasetId") Long datasetId,
+    int updateDatasetStatusById(@Param(value = "datasetId") Long datasetId,
                                  @Param(value = "status") Integer status);
 
     /**
@@ -69,4 +77,32 @@ public interface DatasetMapper {
             @Result(property = "isPublic",column = "is_public")
     })
     List<DatasetPostDTO> selectDatasetByKeyword(@Param("keyword")String keyword);
+
+    /**
+     * select not keyword
+     * @return list
+     */
+    @Select(value = "select * " +
+            "from dataset " +
+            "where is_public = 1 and status = 0 " +
+            "order by dataset_id desc")
+    @Results(value = {
+            @Result(property = "datasetId",column = "dataset_id"),
+            @Result(property = "datasetName",column = "dataset_name"),
+            @Result(property = "createTime", column = "create_time"),
+            @Result(property = "isPublic",column = "is_public")
+    })
+    List<DatasetPostDTO> selectAllDataset();
+
+    /**
+     * update the dataset info
+     * @param datasetId the identifier
+     * @param isPublic public or not
+     * @param description the description of dataset
+     * @return successfully or not
+     */
+    @Update("update dataset " +
+            "set is_public = #{isPublic}, description = #{description} " +
+            "where dataset_id = #{datasetId}")
+    boolean updateDatasetDesAndPul(@Param("datasetId")Long datasetId, @Param("isPublic")Long isPublic, @Param("description")String description);
 }

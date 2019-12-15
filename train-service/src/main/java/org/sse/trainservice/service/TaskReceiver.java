@@ -1,5 +1,6 @@
 package org.sse.trainservice.service;
 
+import feign.Response;
 import org.apache.spark.ml.Pipeline;
 import org.apache.spark.ml.PipelineModel;
 import org.apache.spark.sql.Dataset;
@@ -9,12 +10,14 @@ import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.sse.trainservice.client.DataServiceClient;
 import org.sse.trainservice.client.MedataServiceClient;
 import org.sse.trainservice.configuration.RabbitConfig;
 import org.sse.trainservice.domain.Model;
 import org.sse.trainservice.domain.History;
 import org.sse.trainservice.websocket.WebSocketSever;
 
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +39,8 @@ public class TaskReceiver {
     RabbitTemplate rabbitTemplate;
     @Autowired
     MedataServiceClient medataServiceClient;
+    @Autowired
+    DataServiceClient dataServiceClient;
 
     public TaskReceiver(String instanceName){
         this.instanceName=instanceName;
@@ -51,11 +56,22 @@ public class TaskReceiver {
             catch (Exception e){
 
             }
+            Response response = dataServiceClient.downloadFile(map.get("fileId"), "csv");
+            try(InputStream inputStream = response.body().asInputStream();
+                OutputStream outputStream = new FileOutputStream(new File("tmp/"+map.get("fileId")+".csv"))
+            ){
+                byte[] b = new byte[inputStream.available()];
+                inputStream.read(b);
+                outputStream.write(b);
+                outputStream.flush();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
             Long historyId=Long.valueOf(map.get("historyId"));
             Long modelId=Long.valueOf(map.get("modelId"));
             medataServiceClient.setHistory(historyId,2);
             SparkSession spark=SparkSession.builder().appName(map.get("pipelineId")).master("local").getOrCreate();
-            Dataset<Row> dataset=spark.read().option("inferSchema", true).option("header", true).csv("dataset/test.csv");//+map.get("fileId")+".csv");
+            Dataset<Row> dataset=spark.read().option("inferSchema", true).option("header", true).csv("tmp/"+map.get("fileId")+".csv");
             Pipeline pipeline= Pipeline.load("pipeline/"+map.get("username")+"/"+map.get("pipelineName"));
             PipelineModel model=pipeline.fit(dataset);
             model.write().overwrite().save("model/"+map.get("username")+"/"+modelId);

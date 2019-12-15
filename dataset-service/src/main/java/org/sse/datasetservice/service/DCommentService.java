@@ -2,6 +2,8 @@ package org.sse.datasetservice.service;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import org.sse.datasetservice.client.UserServiceClient;
 import org.sse.datasetservice.dto.DCommentDto;
 import org.sse.datasetservice.mapper.DCommentMapper;
@@ -15,6 +17,7 @@ import java.util.*;
  * @author ZTL
  */
 @Service
+@Slf4j
 public class DCommentService {
     @Autowired
     DCommentMapper dCommentMapper;
@@ -23,17 +26,20 @@ public class DCommentService {
     UserServiceClient userServiceClient;
 
     public PageInfo<DCommentDto> getCommentByDatasetId(Long id, int pageNum, int pageSize){
-
+        log.warn("---------");
         PageHelper.startPage(pageNum,pageSize);
-        List<DComment> dCommentList = dCommentMapper.getCommentByDatasetId(id);
-        List<DCommentDto> dCommentDtoList = new ArrayList<>();
-        for (DComment dComment : dCommentList) {
-            dCommentDtoList.add(new DCommentDto(dComment, userServiceClient.getUserAvatarUrlByUsername(dComment.getUsername())));
+        List<DCommentDto> dCommentList = dCommentMapper.getCommentByDatasetId(id);
+        for (DCommentDto dComment : dCommentList) {
+            dComment.setAvatarUrl(userServiceClient.getUserAvatarUrlByUsername(dComment.getUsername()));
         }
-        return new PageInfo<>(dCommentDtoList);
+        log.warn("---------");
+        return new PageInfo<>(dCommentList);
     }
-    public boolean insertCommentByDatasetId(Long id,String username,String content){
-        return dCommentMapper.insertCommentByDatasetId(id,username,content);
+
+    @Transactional(rollbackFor = Exception.class)
+    public Long insertCommentByDatasetId(DComment dComment){
+        dCommentMapper.insertCommentByDatasetId(dComment);
+        return dComment.getDCommentId();
     }
 
     public int getCommentNumByDatasetId(Long datasetId) {

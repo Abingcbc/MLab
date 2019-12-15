@@ -58,13 +58,10 @@ public class DataService {
             inputStream = multipartFile.getInputStream();
             file = new File(Objects.requireNonNull(multipartFile.getOriginalFilename()));
             outputStream = new FileOutputStream(file);
-            byte[] buffer = new byte[1024*1024];
-            int len = 0;
-            while ((len=inputStream.read(buffer, 0, 1024*1024)) != -1) {
-                outputStream.write(buffer);
-            }
+            outputStream.write(multipartFile.getBytes());
             return file;
         } catch (IOException e) {
+            e.printStackTrace();
             return file;
         } finally {
             closeFileSystemOrStream(inputStream);
@@ -96,6 +93,7 @@ public class DataService {
             if (!checkIsChunkExisted(chunk)) {
                 fileSystem = FileSystem.get(configuration);
                 File file = multiPartFileToFile(chunk.getFile());
+                log.warn(String.valueOf(file.length()));
                 Path srcPath = new Path(file.getPath());
                 Path dstPath = new Path(folderPath+"/tmp/"+chunk.getChunkNumber()+chunk.getIdentifier()+".tmp");
                 fileSystem.copyFromLocalFile(srcPath, dstPath);

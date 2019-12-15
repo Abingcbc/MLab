@@ -1,6 +1,5 @@
 package org.sse.gateway;
 
-import com.github.mthizo247.cloud.netflix.zuul.web.socket.EnableZuulWebSocket;
 import com.spring4all.swagger.EnableSwagger2Doc;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -8,7 +7,6 @@ import org.springframework.cloud.client.SpringCloudApplication;
 import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import springfox.documentation.swagger.web.SwaggerResource;
 import springfox.documentation.swagger.web.SwaggerResourcesProvider;
 
@@ -30,8 +28,6 @@ public class GatewayApplication {
     @Component
     @Primary
     @EnableAutoConfiguration
-    @EnableWebSocketMessageBroker
-    @EnableZuulWebSocket
     class DocumentationConfig implements SwaggerResourcesProvider {
         @Override
         public List<SwaggerResource> get() {
@@ -39,6 +35,10 @@ public class GatewayApplication {
             resources.add(swaggerResource("data-service", "/data-service/v2/api-docs", "1.0"));
             resources.add(swaggerResource("user-service", "/user-service/v2/api-docs", "1.0"));
             resources.add(swaggerResource("metadata-service", "/metadata-service/v2/api-docs", "1.0"));
+            resources.add(swaggerResource("community-service", "/community-service/v2/api-docs", "1.0"));
+            resources.add(swaggerResource("dataset-service", "/dataset-service/v2/api-docs", "1.0"));
+            resources.add(swaggerResource("model-service", "/model-service/v2/api-docs", "1.0"));
+            resources.add(swaggerResource("train-service", "/train-service/v2/api-docs", "1.0"));
             return resources;
         }
 

@@ -53,9 +53,9 @@ public class TrainService {
     }
     public Boolean pushIntoPredictMq(String username, Long modelId,String modelName, String fileId){
         try {
-            Long historyId =medataServiceClient.createNewHistory(new History(0,username,0,modelId));
+            Long historyId =medataServiceClient.createNewHistory(new History(0,username,2,modelId));
             Map<String,String> map=new HashMap<String, String>();
-            map.put("userId",username);
+            map.put("username",username);
             map.put("modelId",modelId.toString());
             map.put("historyId",historyId.toString());
             map.put("fileId",fileId);
