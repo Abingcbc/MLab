@@ -23,6 +23,9 @@ class LabApplicationTests {
 
     @Test
     void contextLoads() {
+        String s="55.csv";
+        long id=Long.valueOf(s.split("\\.")[0]);
+        System.out.println(id);
     }
 
 }
