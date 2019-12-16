@@ -38,8 +38,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests().
-                antMatchers("/register/**").permitAll()
-                .anyRequest().authenticated();
+                anyRequest()
+                .permitAll();
     }
 
     @Bean

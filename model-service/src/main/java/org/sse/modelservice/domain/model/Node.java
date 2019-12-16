@@ -45,9 +45,9 @@ public class Node {
         System.out.println(name);
         if (name.equals("TokenizerNode")) {
             System.out.println("OK!!!!!!!!!!!!!!!!!");
-            config = new TokenizerNodeConfig(jsonObject.getString("inputCol"), jsonObject.getString("outputCol"));
+            config = new TokenizerNodeConfig(jsonObject.getString("InputCol"), jsonObject.getString("OutputCol"));
         } else if (name.equals("HashingTFNode")) {
-            config = new HashingTFNodeConfig(jsonObject.getString("inputCol"), jsonObject.getString("outputCol"),jsonObject.getInteger("numFeatures"));
+            config = new HashingTFNodeConfig(jsonObject.getString("InputCol"), jsonObject.getString("OutputCol"),jsonObject.getInteger("numFeatures"));
         } else if (name.equals("LogisticRegressionNode")) {
             config = new LogisticRegressionNodeConfig(jsonObject.getInteger("maxIter"), jsonObject.getDouble("regParam"));
         }else if(name.equals("InputNode")){

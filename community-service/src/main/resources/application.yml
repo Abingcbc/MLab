@@ -41,3 +41,8 @@ security:
       user-authorization-uri: http://localhost:8081/oauth/authorize
     resource:
       token-info-uri: http://localhost:8081/oauth/check_token
+
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true

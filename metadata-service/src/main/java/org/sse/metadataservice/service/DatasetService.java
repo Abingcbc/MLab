@@ -98,7 +98,7 @@ public class DatasetService {
         List<DatasetPostDTO> datasetPostDTOList = datasetMapper.selectAllDataset();
         for (DatasetPostDTO dto: datasetPostDTOList) {
             dto.setAvatarUrl(userServiceClient.getUserAvatarUrlByUsername(dto.getUsername()));
-            dto.setCommentNum(datasetServiceClient.getCommentNumByDatasetId(dto.getDatasetId()));
+            dto.setCommentNum(0);
         }
         return new PageInfo<>(datasetPostDTOList);
     }

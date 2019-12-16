@@ -50,22 +50,12 @@ public class PredictReceiver {
             catch (Exception e){
 
             }
-            Response response = dataServiceClient.downloadFile(map.get("fileId"), "csv");
-            try(InputStream inputStream = response.body().asInputStream();
-                OutputStream outputStream = new FileOutputStream(new File("tmp/"+map.get("fileId")+".csv"))
-            ){
-                byte[] b = new byte[inputStream.available()];
-                inputStream.read(b);
-                outputStream.write(b);
-                outputStream.flush();
-            }catch (IOException e){
-                e.printStackTrace();
-            }
+
             SparkSession spark=SparkSession.builder().appName(map.get("modelId")).master("local").getOrCreate();
-            Dataset<Row> dataset=spark.read().option("inferSchema", true).option("header", true).csv("tmp/"+map.get("fileId")+".csv");
+            Dataset<Row> dataset=spark.read().option("inferSchema", true).option("header", true).csv("dataset/"+"test2"+".csv");
             PipelineModel model= PipelineModel.load("model/"+map.get("username")+"/"+map.get("modelId"));
             Dataset<Row> predictions = model.transform(dataset);
-            predictions.select("id","prediction").write().format("csv").option("header",true).save("predictions/"+map.get("modelId"));
+            predictions.select("id","prediction").write().format("csv").option("header",true).save("predictions/"+"result");
             spark.stop();
             try {
                 WebSocketSever.get(map.get("username")).sendMessage(map.get("historyId")+":complete");
