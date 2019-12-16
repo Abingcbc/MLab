@@ -26,10 +26,15 @@ public class ResultReceiver {
     @RabbitHandler
     public void sendMail(Map<String,String> map) throws Exception
     {
-        System.out.println("邮件监听器已收到消息");
-        String to=map.get("to");
-        String subject=map.get("subject");
-        String content=map.get("content");
-        mailService.sendSimpleMail(to,subject,content);
+        try {
+            System.out.println("邮件监听器已收到消息");
+            String to=map.get("to");
+            String subject=map.get("subject");
+            String content=map.get("content");
+            mailService.sendSimpleMail(to,subject,content);
+        }
+        catch (Exception e){
+
+        }
     }
 }

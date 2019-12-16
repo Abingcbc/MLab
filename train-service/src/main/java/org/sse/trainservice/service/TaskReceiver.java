@@ -12,9 +12,9 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.sse.trainservice.client.DataServiceClient;
 import org.sse.trainservice.client.MedataServiceClient;
+import org.sse.trainservice.client.UserServiceClient;
 import org.sse.trainservice.configuration.RabbitConfig;
-import org.sse.trainservice.domain.Model;
-import org.sse.trainservice.domain.History;
+import org.sse.trainservice.domain.User;
 import org.sse.trainservice.websocket.WebSocketSever;
 
 import java.io.*;
@@ -41,6 +41,8 @@ public class TaskReceiver {
     MedataServiceClient medataServiceClient;
     @Autowired
     DataServiceClient dataServiceClient;
+    @Autowired
+    UserServiceClient userServiceClient;
 
     public TaskReceiver(String instanceName){
         this.instanceName=instanceName;
@@ -59,8 +61,9 @@ public class TaskReceiver {
             Long historyId=Long.valueOf(map.get("historyId"));
             Long modelId=Long.valueOf(map.get("modelId"));
             medataServiceClient.setHistory(historyId,2);
+            String filePath=downloadFromDataService(map.get("fileId"));
             SparkSession spark=SparkSession.builder().appName(map.get("pipelineId")).master("local").getOrCreate();
-            Dataset<Row> dataset=spark.read().option("inferSchema", true).option("header", true).csv("dataset/test.csv");
+            Dataset<Row> dataset=spark.read().option("inferSchema", true).option("header", true).csv(filePath);
             Pipeline pipeline= Pipeline.load("pipeline/"+map.get("username")+"/"+map.get("pipelineName"));
             PipelineModel model=pipeline.fit(dataset);
             model.write().overwrite().save("model/"+map.get("username")+"/"+modelId);
@@ -87,11 +90,33 @@ public class TaskReceiver {
             rmap.put("content","任务训练失败："+map.get("historyId").toString());
             rabbitTemplate.convertAndSend(RabbitConfig.RESULT_EXCHANGE_NAME, RabbitConfig.RESULT_ROUTING_NAME,rmap);
         }
-        Map<String,String> rmap=new HashMap<String, String>();
-        rmap.put("to","1753837@tongji.edu.cn");
-        rmap.put("subject","已完成任务训练："+map.get("historyId").toString());
-        rmap.put("content","已完成任务训练："+map.get("historyId").toString());
-        rabbitTemplate.convertAndSend(RabbitConfig.RESULT_EXCHANGE_NAME, RabbitConfig.RESULT_ROUTING_NAME,rmap);
+        try {
+            Map<String, String> rmap = new HashMap<String, String>();
+            User userInfo=userServiceClient.getUserInfoWithoutPassword(map.get("username"));
+            rmap.put("to", userInfo.getEmail());
+            rmap.put("subject", "已完成任务训练：" + map.get("historyId").toString());
+            rmap.put("content", "已完成任务训练：" + map.get("historyId").toString());
+            rabbitTemplate.convertAndSend(RabbitConfig.RESULT_EXCHANGE_NAME, RabbitConfig.RESULT_ROUTING_NAME,rmap);
+        }catch (Exception e){
+
+        }
+
+    }
+
+    private String downloadFromDataService(String fileId){
+        Response response = dataServiceClient.downloadFile(fileId, "csv");
+        try(InputStream inputStream = response.body().asInputStream();
+            OutputStream outputStream = new FileOutputStream(new File("tmp/"+fileId+".csv"))
+        ){
+            byte[] b = new byte[inputStream.available()];
+            inputStream.read(b);
+            outputStream.write(b);
+            outputStream.flush();
+            return "tmp/"+fileId+".csv";
+        }catch (IOException e){
+            e.printStackTrace();
+            return null;
+        }
     }
 
 
