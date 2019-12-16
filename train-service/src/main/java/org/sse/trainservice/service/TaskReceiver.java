@@ -56,22 +56,11 @@ public class TaskReceiver {
             catch (Exception e){
 
             }
-            Response response = dataServiceClient.downloadFile(map.get("fileId"), "csv");
-            try(InputStream inputStream = response.body().asInputStream();
-                OutputStream outputStream = new FileOutputStream(new File("tmp/"+map.get("fileId")+".csv"))
-            ){
-                byte[] b = new byte[inputStream.available()];
-                inputStream.read(b);
-                outputStream.write(b);
-                outputStream.flush();
-            }catch (IOException e){
-                e.printStackTrace();
-            }
             Long historyId=Long.valueOf(map.get("historyId"));
             Long modelId=Long.valueOf(map.get("modelId"));
             medataServiceClient.setHistory(historyId,2);
             SparkSession spark=SparkSession.builder().appName(map.get("pipelineId")).master("local").getOrCreate();
-            Dataset<Row> dataset=spark.read().option("inferSchema", true).option("header", true).csv("tmp/"+map.get("fileId")+".csv");
+            Dataset<Row> dataset=spark.read().option("inferSchema", true).option("header", true).csv("dataset/test.csv");
             Pipeline pipeline= Pipeline.load("pipeline/"+map.get("username")+"/"+map.get("pipelineName"));
             PipelineModel model=pipeline.fit(dataset);
             model.write().overwrite().save("model/"+map.get("username")+"/"+modelId);
@@ -99,7 +88,7 @@ public class TaskReceiver {
             rabbitTemplate.convertAndSend(RabbitConfig.RESULT_EXCHANGE_NAME, RabbitConfig.RESULT_ROUTING_NAME,rmap);
         }
         Map<String,String> rmap=new HashMap<String, String>();
-        rmap.put("to","caiyiyang1998@126.com");
+        rmap.put("to","1753837@tongji.edu.cn");
         rmap.put("subject","已完成任务训练："+map.get("historyId").toString());
         rmap.put("content","已完成任务训练："+map.get("historyId").toString());
         rabbitTemplate.convertAndSend(RabbitConfig.RESULT_EXCHANGE_NAME, RabbitConfig.RESULT_ROUTING_NAME,rmap);

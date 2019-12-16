@@ -35,7 +35,7 @@ public interface DCommentMapper {
      * @return insert successfully or not
      */
     @Insert("insert into d_comment(dataset_id,username,content,create_time,`status`,reply_num,like_num) " +
-            "values(#{datasetId},#{myUsername},#{myContent},now(),0,0,0)")
+            "values(#{datasetId},#{username},#{content},now(),0,0,0)")
     @Options(useGeneratedKeys = true, keyProperty = "dCommentId",keyColumn = "d_comment_id")
     boolean insertCommentByDatasetId(DComment comment);
 }
